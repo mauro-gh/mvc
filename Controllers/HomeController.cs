@@ -15,8 +15,8 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        //return View();
-        return Content("Sono index della home");
+        return View();
+        //return Content("Sono index della home controller");
     }
 
     // public IActionResult Privacy()
