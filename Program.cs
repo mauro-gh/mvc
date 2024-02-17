@@ -12,11 +12,19 @@ internal class Program
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.
-        if (!app.Environment.IsDevelopment())
+        if (app.Environment.IsDevelopment())
         {
             app.UseExceptionHandler("/Home/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
+
+            app.Lifetime.ApplicationStarted.Register(() =>
+            {
+                string filePath = Path.Combine(app.Environment.ContentRootPath, "bin/reload.txt");
+                File.WriteAllText(filePath, DateTime.Now.ToString());
+            
+            });
+
         }
 
         app.UseStaticFiles();
