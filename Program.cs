@@ -22,7 +22,7 @@ internal class Program
             {
                 string filePath = Path.Combine(app.Environment.ContentRootPath, "bin/reload.txt");
                 File.WriteAllText(filePath, DateTime.Now.ToString());
-            
+
             });
 
         }
