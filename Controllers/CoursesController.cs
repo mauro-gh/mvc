@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using mvc.Models.Services.Application;
+using mvc.Models.ViewModels;
 
 namespace mvc.Controllers
 {
@@ -26,12 +28,18 @@ namespace mvc.Controllers
             // return Json(ogg)=: restituire oggetto serializzato in json
 
             //return Content("Sono index");
-            return View();
+            // Elenco corsi
+            CourseService cs = new CourseService();
+            List<CourseViewModel> courses = cs.GetServices();
+            
+            // Passo elenco alla view
+            return View(courses);
         }
 
         public IActionResult Detail(string id)
         {
             //return Content($"Sono detail, ricevuto id {id}");
+            // Dettaglio corso
             return View();
         }
 
