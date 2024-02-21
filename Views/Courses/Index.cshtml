@@ -1,17 +1,16 @@
 
 
 @{
-    Layout = "_Layout";
-    string controllerName = "Course Controller";
+    Layout = "_Layout";    
 }
     
     <h1>Catalogo dei corsi</h1>
 
-@for (int i=1; i<=5; i++)
+@for (int i=1; i<=2; i++)
 {
 <div class="row">
-    <div class="col-md-1">
-        <img src="~/logo.png" width="100">
+    <div class="col-md-2">
+        <img src="~/logo.png" width="80">
         
     </div>
     <div class="col-md-5">
@@ -30,13 +29,14 @@
         EUR 10,99<br /><s>EUR 12,99</s>
 
     </div>
-    <div class="col-md-2">
-        <a class="btn btn-outline-primary" asp-action="Detail" asp-controller="Courses" asp-route-id="5">Dettaglio corso 5</a>        
+    <div class="col-md-1">
+        <a class="btn btn-outline-info btn-sm" asp-action="Detail" asp-controller="Courses" asp-route-id="5">Dettaglio corso 5</a>        
     </div>
 </div>
 
 }
-    
+
+
 
 
     
