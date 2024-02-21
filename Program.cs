@@ -20,6 +20,7 @@ internal class Program
 
             app.Lifetime.ApplicationStarted.Register(() =>
             {
+                // Scrive file di testo ad ogni run
                 string filePath = Path.Combine(app.Environment.ContentRootPath, "bin/reload.txt");
                 File.WriteAllText(filePath, DateTime.Now.ToString());
 
