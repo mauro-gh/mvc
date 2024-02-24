@@ -10,7 +10,7 @@ namespace mvc.Models.ViewModels
         public int Id {get;set;}
         public string Title {get;set;} = string.Empty;
         /* aaa */
-        public string ImagePath {get;set;} = string.Empty;
+        public string LogoPath {get;set;} = string.Empty;
         public string Author {get;set;} = string.Empty;
         public double Rating {get;set;}
         public decimal FullPrice {get;set;}
