@@ -23,7 +23,7 @@ namespace mvc.Models.Services.Application
                     Title = $"Corso {i}",
                     CurrentPrice = price,
                     FullPrice = rand.NextDouble() > 0.5 ? price : price -1,
-                    Author = "Nome cognome",
+                    Author = "Nome Cognome",
                     Rating = rand.NextDouble() * 5.0,
                     ImagePath = "~/logo.png"
                 };
