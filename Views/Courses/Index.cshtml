@@ -1,5 +1,8 @@
 
 @model List<CourseViewModel>
+    
+
+
 
 
 <h1>Catalogo dei corsi</h1>
@@ -23,16 +26,32 @@
         {
             if (course.Rating >= i)
             {
-                <i class="fa-solid fa-star"></i>
+                <i class="fas fa-star"></i>
             }
             else if (course.Rating > i -1 )
             {
-                <i class="fa-solid fa-star-half-alt"></i>
+                <i class="fas fa-star-half-alt"></i>
             }
             else
             {
-                
+                <i class="far fa-star"></i>
             }
+
+/*
+                        if (Model.Rating >= i)
+                        {
+                            <i class="fas fa-star"></i>
+                        }
+                        else if (Model.Rating > i - 1)
+                        {
+                            <i class="fas fa-star-half-alt"></i>
+                        }
+                        else
+                        {
+                            <i class="far fa-star"></i>
+                        }
+*/
+
         }
 
 

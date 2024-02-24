@@ -30,17 +30,21 @@ namespace mvc.Controllers
             //return Content("Sono index");
             // Elenco corsi
             CourseService cs = new CourseService();
-            List<CourseViewModel> courses = cs.GetServices();
+            List<CourseViewModel> courses = cs.GetCourses();
             
             // Passo elenco alla view
             return View(courses);
         }
 
-        public IActionResult Detail(string id)
+        public IActionResult Detail(int id)
         {
             //return Content($"Sono detail, ricevuto id {id}");
             // Dettaglio corso
-            return View();
+            //return View();
+            CourseService cs = new CourseService();
+            CourseDetailViewModel viewModel = cs.GetCourse(id);
+
+            return View(viewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -49,4 +53,6 @@ namespace mvc.Controllers
             return View("Error!");
         }
     }
+
+
 }
