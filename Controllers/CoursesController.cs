@@ -28,9 +28,11 @@ namespace mvc.Controllers
             // return Json(ogg)=: restituire oggetto serializzato in json
 
             //return Content("Sono index");
-            // Elenco corsi
+            // Scarico elenco corsi dal model
             CourseService cs = new CourseService();
             List<CourseViewModel> courses = cs.GetCourses();
+
+            ViewData["ViewDataTitle"] = "Catalogo dei corsi";
             
             // Passo elenco alla view
             return View(courses);
@@ -41,9 +43,14 @@ namespace mvc.Controllers
             //return Content($"Sono detail, ricevuto id {id}");
             // Dettaglio corso
             //return View();
-            CourseService cs = new CourseService();
-            CourseDetailViewModel viewModel = cs.GetCourse(id);
 
+            // Scarico corso dal model in base al ID
+            CourseService cs = new CourseService();
+            var viewModel = cs.GetCourse(id);
+
+            ViewData["ViewDataTitle"] = viewModel.Title;
+
+            // Passo corso alla view (saltando questo passaggio si genera errore nella view)
             return View(viewModel);
         }
 

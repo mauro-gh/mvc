@@ -16,6 +16,8 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
+        ViewData["ViewDataTitle"] = "Benvenuti";
+
         return View();
         //return Content("Sono index della home controller");
     }
