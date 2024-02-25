@@ -8,14 +8,6 @@ namespace mvc.Models.Services.Application
 {
     public class CourseService : ICourseService
     {
-        public string Version { 
-            get
-            {
-                return "1.0";
-            }
-        }
-
-
         public List<CourseViewModel> GetCourses()
         {
             
@@ -39,7 +31,6 @@ namespace mvc.Models.Services.Application
 
             }
             return courseList;
-
         }
 
         public CourseDetailViewModel GetCourse(int id)
@@ -71,11 +62,16 @@ namespace mvc.Models.Services.Application
 
             }
 
-            return corso;
-
-
-
-            
+            return corso;            
         }
+
+        public string Version { 
+            get
+            {
+                return "1.0";
+            }
+        }
+
+
     }
 }
