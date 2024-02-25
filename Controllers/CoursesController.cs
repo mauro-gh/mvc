@@ -10,14 +10,26 @@ using mvc.Models.ViewModels;
 
 namespace mvc.Controllers
 {
+
+
     public class CoursesController : Controller
     {
-        private readonly ILogger<CoursesController> _logger;
 
-        public CoursesController(ILogger<CoursesController> logger)
+        //private readonly ILogger<CoursesController> _logger;
+        private readonly ICourseService cs;
+
+
+        // costruttore (ctor + tab) per la dependency injection)
+        public CoursesController(ICourseService courseService)
         {
-            _logger = logger;
+            this.cs = courseService;
         }
+
+
+        // public CoursesController(ILogger<CoursesController> logger)
+        // {
+        //     _logger = logger;
+        // }
 
         public IActionResult Index()
         {
@@ -29,7 +41,7 @@ namespace mvc.Controllers
 
             //return Content("Sono index");
             // Scarico elenco corsi dal model
-            CourseService cs = new CourseService();
+            //CourseService cs = new CourseService();
             List<CourseViewModel> courses = cs.GetCourses();
 
             ViewData["ViewDataTitle"] = "Catalogo dei corsi";
@@ -45,7 +57,7 @@ namespace mvc.Controllers
             //return View();
 
             // Scarico corso dal model in base al ID
-            CourseService cs = new CourseService();
+            //CourseService cs = new CourseService();
             var viewModel = cs.GetCourse(id);
 
             ViewData["ViewDataTitle"] = viewModel.Title;

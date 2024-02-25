@@ -1,3 +1,5 @@
+using mvc.Models.Services.Application;
+
 internal class Program
 {
     private static void Main(string[] args)
@@ -8,6 +10,9 @@ internal class Program
         //builder.Services.AddControllersWithViews();
 
         builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
+        // deve preparare alla gestione di oggetti di tipo CourseService,
+        // net core deve costruirlo e passarlo
+        builder.Services.AddScoped<ICourseService, CourseService>();
 
         var app = builder.Build();
 

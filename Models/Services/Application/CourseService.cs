@@ -6,8 +6,16 @@ using mvc.Models.ViewModels;
 
 namespace mvc.Models.Services.Application
 {
-    public class CourseService
+    public class CourseService : ICourseService
     {
+        public string Version { 
+            get
+            {
+                return "1.0";
+            }
+        }
+
+
         public List<CourseViewModel> GetCourses()
         {
             
