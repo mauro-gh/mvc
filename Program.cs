@@ -13,7 +13,7 @@ internal class Program
         builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
         // deve preparare alla gestione di oggetti di tipo CourseService,
         // net core deve costruirlo e passarlo
-        builder.Services.AddTransient<ICourseService, CourseService>();
+        //builder.Services.AddTransient<ICourseService, CourseService>();
         builder.Services.AddTransient<ICourseService, AdoNetCourseService>();
         // Ogni volta che un componente ha una dipendenza da questa interfaccia,
         // net core initierra' un'istanza di SqliteDatabaseAccessor
