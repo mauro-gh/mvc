@@ -10,9 +10,9 @@ namespace mvc.Models.Services.Application
     {
         // dichiaro tutti i metodi di questo contratto
 
-        List<CourseViewModel> GetCourses();
+        Task<List<CourseViewModel>> GetCoursesAsync();
 
-        CourseDetailViewModel GetCourse(int id);
+        Task<CourseDetailViewModel> GetCourseAsync(int id);
 
         public string Version { get; }
 

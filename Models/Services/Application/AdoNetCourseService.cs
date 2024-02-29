@@ -20,7 +20,7 @@ namespace mvc.Models.Services.Application
             
         }
 
-        public CourseDetailViewModel GetCourse(int id)
+        public async Task<CourseDetailViewModel> GetCourseAsync(int id)
         {
             FormattableString query = $@"SELECT * FROM Courses WHERE Id = {id};
                 SELECT * FROM Lessons where CourseId = {id}" ;
@@ -28,7 +28,7 @@ namespace mvc.Models.Services.Application
             
 
 
-            DataSet ds = db.Query(query);
+            DataSet ds = await db.QueryAsync(query);
 
             // Corsi
             DataTable dtCorsi = ds.Tables[0];
@@ -53,10 +53,10 @@ namespace mvc.Models.Services.Application
             
         }
 
-        public List<CourseViewModel> GetCourses()
+        public async Task<List<CourseViewModel>> GetCoursesAsync()
         {
             FormattableString query = $@"SELECT Id, Title, LogoPath, Author, Rating, FullPrice_Amount, FullPrice_Currency, CurrentPrice_Amount, CurrentPrice_Currency  FROM Courses";
-            DataSet ds = db.Query(query);
+            DataSet ds = await db.QueryAsync(query);
             
             var dt = ds.Tables[0];
 

@@ -8,6 +8,6 @@ namespace mvc.Models.Services.Infastructure
 {
     public interface IDatabaseAccessor
     {
-        DataSet Query(FormattableString query);
+        Task<DataSet> QueryAsync(FormattableString query);
     }
 }

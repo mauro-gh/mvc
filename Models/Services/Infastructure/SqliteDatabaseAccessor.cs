@@ -9,7 +9,7 @@ namespace mvc.Models.Services.Infastructure
 {
     public class SqliteDatabaseAccessor : IDatabaseAccessor
     {
-        public DataSet Query(FormattableString fquery)
+        public async Task<DataSet> QueryAsync(FormattableString fquery)
         {
             // la using automaticamente implementa la dispose sia in caso di errori che non
             
@@ -26,11 +26,13 @@ namespace mvc.Models.Services.Infastructure
 
             using (var conn  = new SqliteConnection("Data Source=Data/MyCourse.db"))
             {
-                conn.Open();
+                //conn.Open();
+                await conn.OpenAsync();
+
                 using (var cmd = new SqliteCommand(query, conn))
                 {
                     cmd.Parameters.AddRange(sqliteParameters); // aggiunge i 2 parametri
-                    using (var reader = cmd.ExecuteReader())
+                    using (var reader = await cmd.ExecuteReaderAsync())
                     {
                         DataSet ds = new DataSet();
                         var i = 0;

@@ -31,7 +31,7 @@ namespace mvc.Controllers
         //     _logger = logger;
         // }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             // return Content(testo): per avere esatto controllo sulla risposta
             // return View(oggetto): restituisce contenuto HTML
@@ -42,7 +42,7 @@ namespace mvc.Controllers
             //return Content("Sono index");
             // Scarico elenco corsi dal model
             //CourseService cs = new CourseService();
-            List<CourseViewModel> courses = cs.GetCourses();
+            List<CourseViewModel> courses = await cs.GetCoursesAsync();
 
             ViewData["ViewDataTitle"] = "Catalogo dei corsi";
             
@@ -50,7 +50,7 @@ namespace mvc.Controllers
             return View(courses);
         }
 
-        public IActionResult Detail(int id)
+        public async Task<IActionResult> Detail(int id)
         {
             //return Content($"Sono detail, ricevuto id {id}");
             // Dettaglio corso
@@ -58,7 +58,7 @@ namespace mvc.Controllers
 
             // Scarico corso dal model in base al ID
             //CourseService cs = new CourseService();
-            var viewModel = cs.GetCourse(id);
+            var viewModel = await cs.GetCourseAsync(id);
 
             ViewData["ViewDataTitle"] = viewModel.Title;
 
