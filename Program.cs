@@ -1,5 +1,5 @@
 using mvc.Models.Services.Application;
-using mvc.Models.Services.Infastructure;
+using mvc.Models.Services.Infrastructure;
 
 internal class Program
 {
@@ -13,11 +13,17 @@ internal class Program
         builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
         // deve preparare alla gestione di oggetti di tipo CourseService,
         // net core deve costruirlo e passarlo
-        //builder.Services.AddTransient<ICourseService, CourseService>();
-        builder.Services.AddTransient<ICourseService, AdoNetCourseService>();
+        //builder.Services.AddTransient<ICourseService, CourseService>();  // versione con valori auto generati da codice
+        //builder.Services.AddTransient<ICourseService, AdoNetCourseService>(); // versione con valori letti da DB con adonet
+        builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
+
+        builder.Services.AddDbContext<MyCourseDbContext>();   
+
         // Ogni volta che un componente ha una dipendenza da questa interfaccia,
         // net core initierra' un'istanza di SqliteDatabaseAccessor
         builder.Services.AddTransient<IDatabaseAccessor, SqliteDatabaseAccessor>();
+
+        string testo = null;
 
 
         var app = builder.Build();

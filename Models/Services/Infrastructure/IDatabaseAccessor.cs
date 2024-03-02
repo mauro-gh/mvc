@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace mvc.Models.Services.Infastructure
+namespace mvc.Models.Services.Infrastructure
 {
     public interface IDatabaseAccessor
     {

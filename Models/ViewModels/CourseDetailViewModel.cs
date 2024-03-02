@@ -23,8 +23,8 @@ namespace mvc.Models.ViewModels
                 Author = (string) dr["Author"],
                 LogoPath = (string) dr["LogoPath"],
                 Rating = Convert.ToDouble( dr["Rating"]),
-                FullPrice = Convert.ToDecimal( dr["FullPrice_Amount"]),
-                CurrentPrice = Convert.ToDecimal(dr["CurrentPrice_Amount"]),
+                FullPriceAmount = Convert.ToDecimal( dr["FullPrice_Amount"]),
+                CurrentPriceAmount = Convert.ToDecimal(dr["CurrentPrice_Amount"]),
                 Id = Convert.ToInt32(dr["id"]),
                 Lessons = new List<LessonViewModel>()
 

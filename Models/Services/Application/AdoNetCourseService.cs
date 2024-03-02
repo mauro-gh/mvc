@@ -4,7 +4,7 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
-using mvc.Models.Services.Infastructure;
+using mvc.Models.Services.Infrastructure;
 using mvc.Models.ViewModels;
 using SQLitePCL;
 
