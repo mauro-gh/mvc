@@ -1,4 +1,6 @@
+using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore;
+using mvc;
 using mvc.Models.Services.Application;
 using mvc.Models.Services.Infrastructure;
 
@@ -6,7 +8,14 @@ internal class Program
 {
     private static void Main(string[] args)
     {
+
+
+
         var builder = WebApplication.CreateBuilder(args);
+
+        Startup startup = new Startup(builder.Configuration);
+        startup.test();
+
 
         // Add services to the container.
         //builder.Services.AddControllersWithViews();
@@ -19,8 +28,12 @@ internal class Program
         builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
 
         //builder.Services.AddDbContext<MyCourseDbContext>(); 
+        // lettura di una chiave
+        //string connectionString = startup.Config.GetSection("ConnectionStrings").GetValue<string>("Default");
+        string connectionString = startup.Config.GetConnectionString("Default");
         // sostituire AddDbContext con AddDbContextPool
-        Action<DbContextOptionsBuilder> actionSqLite = (action) => action.UseSqlite("Data Source=Data/MyCourse.db");
+        
+        Action<DbContextOptionsBuilder> actionSqLite = (action) => action.UseSqlite(connectionString);
         builder.Services.AddDbContextPool<MyCourseDbContext>(actionSqLite);
 
 
@@ -28,8 +41,7 @@ internal class Program
         // net core initierra' un'istanza di SqliteDatabaseAccessor
         builder.Services.AddTransient<IDatabaseAccessor, SqliteDatabaseAccessor>();
 
-        string testo = null;
-
+        
 
         var app = builder.Build();
 
@@ -87,4 +99,7 @@ internal class Program
 
         app.Run();
     }
+
+    
+
 }
