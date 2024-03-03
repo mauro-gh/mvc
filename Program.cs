@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using mvc.Models.Services.Application;
 using mvc.Models.Services.Infrastructure;
 
@@ -17,7 +18,11 @@ internal class Program
         //builder.Services.AddTransient<ICourseService, AdoNetCourseService>(); // versione con valori letti da DB con adonet
         builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
 
-        builder.Services.AddDbContext<MyCourseDbContext>();   
+        //builder.Services.AddDbContext<MyCourseDbContext>(); 
+        // sostituire AddDbContext con AddDbContextPool
+        Action<DbContextOptionsBuilder> actionSqLite = (action) => action.UseSqlite("Data Source=Data/MyCourse.db");
+        builder.Services.AddDbContextPool<MyCourseDbContext>(actionSqLite);
+
 
         // Ogni volta che un componente ha una dipendenza da questa interfaccia,
         // net core initierra' un'istanza di SqliteDatabaseAccessor
@@ -66,6 +71,19 @@ internal class Program
             name: "default",
             pattern: "{controller=Home}/{action=Index}/{id?}");
         */
+
+        // Func<int, int, bool> numeriuguali =
+        //     (num1, num2) =>  {
+        //         return num1 == num2;
+        //         };
+
+        // bool uguali  = numeriuguali(10, 15);
+        // if (uguali)
+        //     Console.WriteLine("uguali");
+        // else
+        //     Console.WriteLine("diversi");
+
+
 
         app.Run();
     }
