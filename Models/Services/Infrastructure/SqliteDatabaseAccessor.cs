@@ -4,11 +4,21 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Options;
+using mvc.Models.Options;
 
 namespace mvc.Models.Services.Infrastructure
 {
     public class SqliteDatabaseAccessor : IDatabaseAccessor
     {
+        private readonly IOptionsMonitor<ConnectionStringsOptions> connectionStringsOptions;
+
+        // costruttore per ricevere la sezione del config (e ricevere gli aggiornamenti)
+        public SqliteDatabaseAccessor(IOptionsMonitor<ConnectionStringsOptions> connectionStringsOptions)
+        {
+            this.connectionStringsOptions = connectionStringsOptions;
+        }
+
         public async Task<DataSet> QueryAsync(FormattableString fquery)
         {
             // la using automaticamente implementa la dispose sia in caso di errori che non
@@ -24,7 +34,10 @@ namespace mvc.Models.Services.Infrastructure
             }
             string query = fquery.ToString(); // ora la stringa ha parametri accettabili da sqlite (@0 e @1)
 
-            using (var conn  = new SqliteConnection("Data Source=Data/MyCourse.db"))
+            string connectionString = connectionStringsOptions.CurrentValue.Default;
+
+
+            using (var conn  = new SqliteConnection(connectionString))
             {
                 //conn.Open();
                 await conn.OpenAsync();

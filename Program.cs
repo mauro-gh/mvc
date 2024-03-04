@@ -1,6 +1,7 @@
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore;
 using mvc;
+using mvc.Models.Options;
 using mvc.Models.Services.Application;
 using mvc.Models.Services.Infrastructure;
 
@@ -24,8 +25,8 @@ internal class Program
         // deve preparare alla gestione di oggetti di tipo CourseService,
         // net core deve costruirlo e passarlo
         //builder.Services.AddTransient<ICourseService, CourseService>();  // versione con valori auto generati da codice
-        //builder.Services.AddTransient<ICourseService, AdoNetCourseService>(); // versione con valori letti da DB con adonet
-        builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
+        builder.Services.AddTransient<ICourseService, AdoNetCourseService>(); // versione con valori letti da DB con adonet
+        //builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
 
         //builder.Services.AddDbContext<MyCourseDbContext>(); 
         // lettura di una chiave
@@ -41,7 +42,8 @@ internal class Program
         // net core initierra' un'istanza di SqliteDatabaseAccessor
         builder.Services.AddTransient<IDatabaseAccessor, SqliteDatabaseAccessor>();
 
-        
+        // Options
+        builder.Services.Configure<ConnectionStringsOptions>(startup.Config.GetSection("ConnectionStrings"));
 
         var app = builder.Build();
 
