@@ -4,6 +4,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
+using Microsoft.Extensions.Options;
+using mvc.Models.Options;
 using mvc.Models.Services.Infrastructure;
 using mvc.Models.ViewModels;
 using SQLitePCL;
@@ -13,11 +15,13 @@ namespace mvc.Models.Services.Application
     public class AdoNetCourseService : ICourseService
     {
         private readonly IDatabaseAccessor db;
-     
-        public AdoNetCourseService(IDatabaseAccessor db)
+        private readonly IOptionsMonitor<CoursesOptions> coursesOptions;
+
+        public AdoNetCourseService(IDatabaseAccessor db, IOptionsMonitor<CoursesOptions> coursesOptions)
         {
+            this.coursesOptions = coursesOptions;
+            string by = coursesOptions.CurrentValue.Order.By;
             this.db = db;
-            
         }
 
         public async Task<CourseDetailViewModel> GetCourseAsync(int id)
@@ -25,7 +29,6 @@ namespace mvc.Models.Services.Application
             FormattableString query = $@"SELECT * FROM Courses WHERE Id = {id};
                 SELECT * FROM Lessons where CourseId = {id}" ;
 
-            
 
 
             DataSet ds = await db.QueryAsync(query);

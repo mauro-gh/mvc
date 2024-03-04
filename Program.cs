@@ -44,6 +44,8 @@ internal class Program
 
         // Options
         builder.Services.Configure<ConnectionStringsOptions>(startup.Config.GetSection("ConnectionStrings"));
+        builder.Services.Configure<CoursesOptions>(startup.Config.GetSection("Courses"));
+        
 
         var app = builder.Build();
 
