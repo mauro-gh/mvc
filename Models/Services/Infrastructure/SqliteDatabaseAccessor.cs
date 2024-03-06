@@ -11,16 +11,25 @@ namespace mvc.Models.Services.Infrastructure
 {
     public class SqliteDatabaseAccessor : IDatabaseAccessor
     {
+        private readonly ILogger<SqliteDatabaseAccessor> logger;
         private readonly IOptionsMonitor<ConnectionStringsOptions> connectionStringsOptions;
 
         // costruttore per ricevere la sezione del config (e ricevere gli aggiornamenti)
-        public SqliteDatabaseAccessor(IOptionsMonitor<ConnectionStringsOptions> connectionStringsOptions)
+        public SqliteDatabaseAccessor(
+                    ILogger<SqliteDatabaseAccessor> logger,
+                    IOptionsMonitor<ConnectionStringsOptions> connectionStringsOptions)
         {
+            this.logger = logger;
             this.connectionStringsOptions = connectionStringsOptions;
         }
 
         public async Task<DataSet> QueryAsync(FormattableString fquery)
         {
+
+            // log strutturato
+            logger.LogInformation(fquery.Format, fquery.GetArguments());
+
+
             // la using automaticamente implementa la dispose sia in caso di errori che non
             
             // Creiamo dei SqliteParameter a partire dalla FormattableString

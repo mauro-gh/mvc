@@ -14,23 +14,31 @@ namespace mvc.Models.Services.Application
 {
     public class AdoNetCourseService : ICourseService
     {
+        private readonly ILogger<AdoNetCourseService> logger;
         private readonly IDatabaseAccessor db;
         private readonly IOptionsMonitor<CoursesOptions> coursesOptions;
 
-        public AdoNetCourseService(IDatabaseAccessor db, IOptionsMonitor<CoursesOptions> coursesOptions)
+        public AdoNetCourseService(
+            ILogger<AdoNetCourseService> logger,    // log con sua categoria
+            IDatabaseAccessor db, // nostra interfaccia per implementare metodo QueryAsync
+            IOptionsMonitor<CoursesOptions> coursesOptions // sezione di configurazione nel appsetting
+            )
         {
             this.coursesOptions = coursesOptions;
             string by = coursesOptions.CurrentValue.Order.By;
 
             long perpage = coursesOptions.CurrentValue.PerPage;
-            
-
-
+            this.logger = logger;
             this.db = db;
         }
 
         public async Task<CourseDetailViewModel> GetCourseAsync(int id)
         {
+
+            // log strutturato
+            logger.LogInformation("Couses {id} requested", id);
+
+
             FormattableString query = $@"SELECT * FROM Courses WHERE Id = {id};
                 SELECT * FROM Lessons where CourseId = {id}" ;
 
