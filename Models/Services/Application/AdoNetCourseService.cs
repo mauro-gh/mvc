@@ -21,6 +21,11 @@ namespace mvc.Models.Services.Application
         {
             this.coursesOptions = coursesOptions;
             string by = coursesOptions.CurrentValue.Order.By;
+
+            long perpage = coursesOptions.CurrentValue.PerPage;
+            
+
+
             this.db = db;
         }
 

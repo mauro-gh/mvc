@@ -4,7 +4,9 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using mvc.Models.Entities;
+using mvc.Models.Options;
 using mvc.Models.Services.Infrastructure;
 using mvc.Models.ViewModels;
 
@@ -13,12 +15,12 @@ namespace mvc.Models.Services.Application
     public class EfCoreCourseService : ICourseService
     {
         private readonly MyCourseDbContext dbContext;
+        private readonly IOptionsMonitor<CoursesOptions> coursesOptions;
 
-        public EfCoreCourseService(MyCourseDbContext dbContext)
+        public EfCoreCourseService(MyCourseDbContext dbContext, IOptionsMonitor<CoursesOptions> coursesOptions )
         {
             this.dbContext = dbContext;
-            
-
+            this.coursesOptions = coursesOptions;
         }
 
         public string Version => "1.0";
@@ -86,8 +88,8 @@ namespace mvc.Models.Services.Application
                     Rating = course.Rating,
                     CurrentPriceAmount = Convert.ToDecimal(course.CurrentPriceAmount),
                     FullPriceAmount = Convert.ToDecimal(course.FullPriceAmount)
-                })
-            .OrderBy(course => course.Title);
+                });
+            //.OrderBy(course => course.Title);
             
             
             List<CourseViewModel> courses = await queryLinq.ToListAsync();
