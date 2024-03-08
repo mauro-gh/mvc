@@ -1,4 +1,4 @@
-namespace mvc.Models;
+namespace mvc.Models.ViewModels;
 
 public class ErrorViewModel
 {

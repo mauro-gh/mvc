@@ -1,0 +1,22 @@
+@model ErrorViewModel
+@{
+    string vViewDataTitle = "Error";
+}
+
+<h1 class="text-danger">Error.</h1>
+<h2 class="text-danger">An error occurred while processing your request.</h2>
+
+@if (Model.ShowRequestId)
+{
+    <p>
+        <strong>Request ID:</strong> <code>@Model.RequestId</code>
+    </p>
+}
+
+<h3>Corso non trovato</h3>
+<p>
+    Il corso richiesto non esiste
+</p>
+<p>
+    <a asp-controller="Courses" asp-action="Index">Torna al catalogo</a>
+</p>

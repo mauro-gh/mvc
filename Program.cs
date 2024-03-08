@@ -46,7 +46,7 @@ internal class Program
         builder.Services.Configure<ConnectionStringsOptions>(startup.Config.GetSection("ConnectionStrings"));
         // da ora in poi, basta implementare interfaccia con IOptionsMonitor<CoursesOptions> e otteniamo tutta la sezione "Courses"
         builder.Services.Configure<CoursesOptions>(startup.Config.GetSection("Courses")); 
-        
+
 
 
 
@@ -55,7 +55,8 @@ internal class Program
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
-            app.UseExceptionHandler("/Home/Error");
+            //app.UseExceptionHandler("/Home/Error");
+            app.UseExceptionHandler("/Error");
             // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
             app.UseHsts();
 
@@ -67,6 +68,9 @@ internal class Program
 
             });
 
+        } else{
+             app.UseExceptionHandler("/Error");
+            
         }
 
         app.UseStaticFiles();

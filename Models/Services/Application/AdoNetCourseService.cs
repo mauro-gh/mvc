@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.Extensions.Options;
+using mvc.Models.Exceptions;
 using mvc.Models.Options;
 using mvc.Models.Services.Infrastructure;
 using mvc.Models.ViewModels;
@@ -49,7 +50,9 @@ namespace mvc.Models.Services.Application
             // Corsi
             DataTable dtCorsi = ds.Tables[0];
             if (dtCorsi.Rows.Count != 1){
-                throw new InvalidOperationException($"non ha restituito 1 record per il corso {id}");
+                logger.LogWarning("Course {id} not found", id);
+                //throw new InvalidOperationException($"non ha restituito 1 record per il corso {id}");
+                throw new CourseNotFoundException(id);
             }
 
             DataRow drCorso = dtCorsi.Rows[0];
