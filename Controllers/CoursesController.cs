@@ -20,7 +20,7 @@ namespace mvc.Controllers
 
 
         // costruttore (ctor + tab) per la dependency injection)
-        public CoursesController(ICourseService courseService)
+        public CoursesController(ICachedCourseService courseService)
         {
             this.cs = courseService;
         }

@@ -41,6 +41,8 @@ internal class Program
         // Ogni volta che un componente ha una dipendenza da questa interfaccia,
         // net core initierra' un'istanza di SqliteDatabaseAccessor
         builder.Services.AddTransient<IDatabaseAccessor, SqliteDatabaseAccessor>();
+        // per la cache
+        builder.Services.AddTransient<ICachedCourseService, MemoryCacheCourseService>();
 
         // Options
         builder.Services.Configure<ConnectionStringsOptions>(startup.Config.GetSection("ConnectionStrings"));
