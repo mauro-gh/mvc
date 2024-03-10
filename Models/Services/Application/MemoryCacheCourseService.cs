@@ -18,7 +18,7 @@ namespace mvc.Models.Services.Application
             this.memoryCache = memoryCache;
         }
 
-        public string Version => "1.0";
+        // Utilizzare memoryCache.Remove($"Course{id}") quando si aggiorna corso su DB
 
         public Task<CourseDetailViewModel> GetCourseAsync(int id)
         {
@@ -28,7 +28,8 @@ namespace mvc.Models.Services.Application
             // prima lo cerca in cache, se non lo trova lo cerca dal DB
             Task<CourseDetailViewModel?> task = memoryCache.GetOrCreateAsync($"Course{id}", cacheEntry =>
             {
-                cacheEntry.SetAbsoluteExpiration(time60sec);
+                cacheEntry.SetSize(1); // occupazione in ram di ogni oggetto (in byte o unita')
+                cacheEntry.SetAbsoluteExpiration(time60sec); // durata della cache (meglio se preso ad options)
                 return courseService.GetCourseAsync(id);
             });
 
@@ -43,6 +44,7 @@ namespace mvc.Models.Services.Application
             // prima lo cerca in cache, se non lo trova lo cerca dal DB
             Task<List<CourseViewModel>?> task = memoryCache.GetOrCreateAsync("Courses", cacheEntry =>
             {
+                cacheEntry.SetSize(100);
                 cacheEntry.SetAbsoluteExpiration(time60sec);
                 return courseService.GetCoursesAsync();
             });
@@ -50,5 +52,8 @@ namespace mvc.Models.Services.Application
             return task;
 
         }
+
+        public string Version => "1.0";
+        
     }
 }

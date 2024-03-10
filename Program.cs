@@ -1,5 +1,6 @@
 using System.Security.Cryptography.X509Certificates;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using mvc;
 using mvc.Models.Options;
 using mvc.Models.Services.Application;
@@ -48,9 +49,9 @@ internal class Program
         builder.Services.Configure<ConnectionStringsOptions>(startup.Config.GetSection("ConnectionStrings"));
         // da ora in poi, basta implementare interfaccia con IOptionsMonitor<CoursesOptions> e otteniamo tutta la sezione "Courses"
         builder.Services.Configure<CoursesOptions>(startup.Config.GetSection("Courses")); 
-
-
-
+        // Cache:
+        builder.Services.Configure<MemoryCacheOptions>(startup.Config.GetSection("MemoryCache"));
+        
 
         var app = builder.Build();
 
