@@ -4,6 +4,8 @@ using mvc.Models;
 
 namespace mvc.Controllers;
 
+// Attributo per mettere nella cache del browser questo intero controller
+
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;
@@ -14,6 +16,9 @@ public class HomeController : Controller
         
     }
 
+
+    // Attributo per mettere nella cache del browser questo action
+    [ResponseCache(CacheProfileName = "Home")]
     public IActionResult Index()
     {
         ViewData["ViewDataTitle"] = "Benvenuti";

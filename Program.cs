@@ -1,4 +1,5 @@
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using mvc;
@@ -22,7 +23,19 @@ internal class Program
         // Add services to the container.
         //builder.Services.AddControllersWithViews();
 
-        builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
+        //builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
+
+        builder.Services.AddMvc(options =>
+        {
+            options.EnableEndpointRouting = false;
+            // leggo opzioni cache da appsetting
+            var homeProfile = new CacheProfile();
+            homeProfile.Duration = startup.Config.GetValue<int>("ResponseCache:Home:Duration");
+            homeProfile.Location = startup.Config.GetValue<ResponseCacheLocation>("ResponseCache:Home:Location");
+            // aggiungo profilo
+            options.CacheProfiles.Add("Home", homeProfile);
+        });
+
         // deve preparare alla gestione di oggetti di tipo CourseService,
         // net core deve costruirlo e passarlo
         //builder.Services.AddTransient<ICourseService, CourseService>();  // versione con valori auto generati da codice
