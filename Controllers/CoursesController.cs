@@ -31,7 +31,17 @@ namespace mvc.Controllers
         //     _logger = logger;
         // }
 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index([FromRoute]string search = null, int page = 1, string orderby = "price",bool ascending = true)
+        {
+            List<CourseViewModel> courses = await cs.GetCoursesAsync();
+
+            ViewData["ViewDataTitle"] = "Catalogo dei corsi";
+            
+            // Passo elenco alla view
+            return View(courses);          
+        }
+
+        public async Task<IActionResult> Index2()
         {
             // return Content(testo): per avere esatto controllo sulla risposta
             // return View(oggetto): restituisce contenuto HTML
@@ -50,7 +60,7 @@ namespace mvc.Controllers
             return View(courses);
         }
 
-        public async Task<IActionResult> Detail(int id)
+        public async Task<IActionResult> Detail([FromRoute]int id)
         {
             //return Content($"Sono detail, ricevuto id {id}");
             // Dettaglio corso
