@@ -7,6 +7,12 @@
 
 <h1>@ViewData["ViewDataTitle"]</h1>
 
+<div>
+    <form asp-controller="Courses" asp-action="Index" method="get">
+        <input type="text" name="search" placeholder="Cerca...">
+        <button><i class="fa-solid fa-magnifying-glass"></i></button>
+    </form>
+</div>
 
 @foreach(CourseViewModel course in Model)
 {
@@ -20,7 +26,7 @@
         <author>di @course.Author </author>
     </div>
 
-    <div class="col-md-2" title=@course.Rating>
+    <div class="col-md-2 rating" title=@course.Rating>
         
         @for(int i = 1; i <=5; i++)
         {
@@ -57,7 +63,7 @@
 
 
     </div>
-    <div class="col-md-2">
+    <div class="col-md-2 price">
         @course.CurrentPriceAmount<br /><s>@course.FullPriceAmount</s>
 
     </div>

@@ -31,7 +31,7 @@ namespace mvc.Controllers
         //     _logger = logger;
         // }
 
-        public async Task<IActionResult> Index([FromRoute]string search = null, int page = 1, string orderby = "price",bool ascending = true)
+        public async Task<IActionResult> Index([FromQuery]string search = null, int page = 1, string orderby = "price",bool ascending = true)
         {
             List<CourseViewModel> courses = await cs.GetCoursesAsync();
 
