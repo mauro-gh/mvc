@@ -4,15 +4,22 @@
 
 
 
-
-<h1>@ViewData["ViewDataTitle"]</h1>
-
-<div>
-    <form asp-controller="Courses" asp-action="Index" method="get">
-        <input type="text" name="search" placeholder="Cerca...">
-        <button><i class="fa-solid fa-magnifying-glass"></i></button>
-    </form>
+<div class="row">
+    <div class="col-md-8">
+        <h1>@ViewData["ViewDataTitle"]</h1>
+    </div>
+    <div class="col-md-4  d-flex align-items-center  " >
+        <form asp-controller="Courses" asp-action="Index" method="get">
+            <div class="input-group">
+                <input type="text" name="search" placeholder="Cerca...">
+                <div class="input-group-append">
+                    <button><i class="input-group-text fa-solid fa-magnifying-glass"></i></button>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
+
 
 @foreach(CourseViewModel course in Model)
 {
