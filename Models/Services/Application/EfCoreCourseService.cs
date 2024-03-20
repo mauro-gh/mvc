@@ -53,7 +53,7 @@ namespace mvc.Models.Services.Application
                 return corso;
         }
 
-        public async Task<List<CourseViewModel>> GetCoursesAsync()
+        public async Task<List<CourseViewModel>> GetCoursesAsync(string search)
         {
             // mappatura tra viewmodel e classe ef
             // List<CourseViewModel> courses = await dbContext.Courses.Select(course =>
@@ -75,8 +75,12 @@ namespace mvc.Models.Services.Application
             // usare AsNoTracking() se non serve il change tracker (tracciamento delle modifiche)
 
 
+            search = search ?? "";
+
+
             // separare query ed esecuzione
             IQueryable<CourseViewModel> queryLinq = dbContext.Courses
+            .Where(course => course.Title.Contains(search, StringComparison.InvariantCultureIgnoreCase))  // clausola WHERE
             .AsNoTracking()
             .Select(course =>
                 new CourseViewModel

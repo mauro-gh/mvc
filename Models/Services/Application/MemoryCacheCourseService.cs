@@ -37,16 +37,18 @@ namespace mvc.Models.Services.Application
 
         }
 
-        public Task<List<CourseViewModel>> GetCoursesAsync()
+        public Task<List<CourseViewModel>> GetCoursesAsync(string search)
         {
             TimeSpan time60sec = TimeSpan.FromSeconds(60);
 
             // prima lo cerca in cache, se non lo trova lo cerca dal DB
-            Task<List<CourseViewModel>?> task = memoryCache.GetOrCreateAsync("Courses", cacheEntry =>
+            // e lo associa SEMPRE alla stessa chiave Courses, quindi in caso di
+            // search valorizzato non restituisce i valori aggiornati
+            Task<List<CourseViewModel>?> task = memoryCache.GetOrCreateAsync($"Courses{search}", cacheEntry =>
             {
                 cacheEntry.SetSize(100);
                 cacheEntry.SetAbsoluteExpiration(time60sec);
-                return courseService.GetCoursesAsync();
+                return courseService.GetCoursesAsync(search);
             });
 
             return task;

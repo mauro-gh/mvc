@@ -33,7 +33,8 @@ namespace mvc.Controllers
 
         public async Task<IActionResult> Index([FromQuery]string search = null, int page = 1, string orderby = "price",bool ascending = true)
         {
-            List<CourseViewModel> courses = await cs.GetCoursesAsync();
+            // questo metodo si occupa anche della ricerca
+            List<CourseViewModel> courses = await cs.GetCoursesAsync(search);
 
             ViewData["ViewDataTitle"] = "Catalogo dei corsi";
             
@@ -41,24 +42,24 @@ namespace mvc.Controllers
             return View(courses);          
         }
 
-        public async Task<IActionResult> Index2()
-        {
-            // return Content(testo): per avere esatto controllo sulla risposta
-            // return View(oggetto): restituisce contenuto HTML
-            // return File(percorso): restituisce contenuto binario di un file
-            // return Redirect(url): reindirizzare su altro url
-            // return Json(ogg)=: restituire oggetto serializzato in json
+        // public async Task<IActionResult> Index2()
+        // {
+        //     // return Content(testo): per avere esatto controllo sulla risposta
+        //     // return View(oggetto): restituisce contenuto HTML
+        //     // return File(percorso): restituisce contenuto binario di un file
+        //     // return Redirect(url): reindirizzare su altro url
+        //     // return Json(ogg)=: restituire oggetto serializzato in json
 
-            //return Content("Sono index");
-            // Scarico elenco corsi dal model
-            //CourseService cs = new CourseService();
-            List<CourseViewModel> courses = await cs.GetCoursesAsync();
+        //     //return Content("Sono index");
+        //     // Scarico elenco corsi dal model
+        //     //CourseService cs = new CourseService();
+        //     List<CourseViewModel> courses = await cs.GetCoursesAsync();
 
-            ViewData["ViewDataTitle"] = "Catalogo dei corsi";
+        //     ViewData["ViewDataTitle"] = "Catalogo dei corsi";
             
-            // Passo elenco alla view
-            return View(courses);
-        }
+        //     // Passo elenco alla view
+        //     return View(courses);
+        // }
 
         public async Task<IActionResult> Detail([FromRoute]int id)
         {
