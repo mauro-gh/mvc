@@ -53,7 +53,7 @@ namespace mvc.Models.Services.Application
                 return corso;
         }
 
-        public async Task<List<CourseViewModel>> GetCoursesAsync(string search)
+        public async Task<List<CourseViewModel>> GetCoursesAsync(string search, int page)
         {
             // mappatura tra viewmodel e classe ef
             // List<CourseViewModel> courses = await dbContext.Courses.Select(course =>
@@ -77,10 +77,16 @@ namespace mvc.Models.Services.Application
 
             search = search ?? "";
 
+            page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
+            int limit = coursesOptions.CurrentValue.PerPage;
+            int offset = (page -1) * 10;
+
 
             // separare query ed esecuzione
             IQueryable<CourseViewModel> queryLinq = dbContext.Courses
             .Where(course => course.Title.Contains(search, StringComparison.InvariantCultureIgnoreCase))  // clausola WHERE
+            .Skip(offset)
+            .Take(limit)
             .AsNoTracking()
             .Select(course =>
                 new CourseViewModel

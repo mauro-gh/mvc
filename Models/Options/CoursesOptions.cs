@@ -11,7 +11,7 @@ namespace mvc.Models.Options
 
     public partial class CoursesOptions
     {
-        public long PerPage { get; set; }
+        public int PerPage { get; set; }
 
         public CousesOrderOptions Order { get; set; }
     }

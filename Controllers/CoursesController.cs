@@ -34,7 +34,7 @@ namespace mvc.Controllers
         public async Task<IActionResult> Index([FromQuery]string search = null, int page = 1, string orderby = "price",bool ascending = true)
         {
             // questo metodo si occupa anche della ricerca
-            List<CourseViewModel> courses = await cs.GetCoursesAsync(search);
+            List<CourseViewModel> courses = await cs.GetCoursesAsync(search, page);
 
             ViewData["ViewDataTitle"] = "Catalogo dei corsi";
             
