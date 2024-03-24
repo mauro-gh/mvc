@@ -74,6 +74,7 @@ namespace mvc.Models.Services.Application
 
         public async Task<List<CourseViewModel>> GetCoursesAsync(string search, int page)
         {
+            // logica di sanitizzazione
             page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
             int limit = coursesOptions.CurrentValue.PerPage;
             int offset = (page -1) * 10;

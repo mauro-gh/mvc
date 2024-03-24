@@ -74,7 +74,7 @@ namespace mvc.Models.Services.Application
 
             // usare AsNoTracking() se non serve il change tracker (tracciamento delle modifiche)
 
-
+            // logica di sanitizzazione
             search = search ?? "";
 
             page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
@@ -85,9 +85,9 @@ namespace mvc.Models.Services.Application
             // separare query ed esecuzione
             IQueryable<CourseViewModel> queryLinq = dbContext.Courses
             .Where(course => course.Title.Contains(search, StringComparison.InvariantCultureIgnoreCase))  // clausola WHERE
-            .Skip(offset)
-            .Take(limit)
-            .AsNoTracking()
+            .Skip(offset)       // salta i primi N record --> offset
+            .Take(limit)        // prende i successivi N record --> limit
+            .AsNoTracking()     // non traccia le modifiche
             .Select(course =>
                 new CourseViewModel
                 {
