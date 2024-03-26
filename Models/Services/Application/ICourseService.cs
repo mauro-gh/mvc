@@ -10,7 +10,7 @@ namespace mvc.Models.Services.Application
     {
         // dichiaro tutti i metodi di questo contratto
 
-        Task<List<CourseViewModel>> GetCoursesAsync(string search, int page);
+        Task<List<CourseViewModel>> GetCoursesAsync(string search, int page, string orderby, bool ascending);
 
         Task<CourseDetailViewModel> GetCourseAsync(int id);
 

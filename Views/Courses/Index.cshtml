@@ -20,14 +20,21 @@
     </div>
 </div>
 
-
+<!-- inserire qui ordinamento -->
+<div class="row">
+    <div class="col-md-1 "></div>
+    <div class="col-md-5 "><a asp-route-orderby="Title" asp-route-ascending="true">Titolo</a></div>
+    <div class="col-md-2 "><a asp-route-orderby="Rating" asp-route-ascending="true">Valutazione</a></div>
+    <div class="col-md-2 "><a asp-route-orderby="CurrentPrice" asp-route-ascending="true">Prezzo</a></div>
+    <div class="col-md-1 "></div>
+</div>
 
 
 @foreach(CourseViewModel course in Model)
 {
-<div class="row">
-    <div class="col-md-2">
-        <img src="@course.LogoPath" title="@course.LogoPath" width="80">
+<div class="row border-top border-primary">
+    <div class="col-md-1 ">
+        <img src="@course.LogoPath" title="@course.LogoPath" width="52">
         
     </div>
     <div class="col-md-5">

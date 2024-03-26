@@ -72,14 +72,52 @@ namespace mvc.Models.Services.Application
             
         }
 
-        public async Task<List<CourseViewModel>> GetCoursesAsync(string search, int page)
+        public async Task<List<CourseViewModel>> GetCoursesAsync(string search, int page, string orderby, bool ascending)
         {
             // logica di sanitizzazione
             page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
             int limit = coursesOptions.CurrentValue.PerPage;
             int offset = (page -1) * 10;
+
+            // sanitizzazione del orderby (l'utente puo' scrivere qualsiasi cosa)
+            var orderOptions = coursesOptions.CurrentValue.Order;
+            if (!orderOptions.Allow.Contains(orderby))
+            {
+                // valori di default da setting
+                orderby = orderOptions.By;
+                ascending = orderOptions.Ascending;
+            }    
+
+            if (orderby == "CurrentPrice")
+            {
+                orderby = "CurrentPrice_Amount";
+            }
+
+            // operatore terniario
+            string direction = ascending ? "ASC" : "DESC";
+
+
+
             
-            FormattableString query = $@"SELECT Id, Title, LogoPath, Author, Rating, FullPrice_Amount, FullPrice_Currency, CurrentPrice_Amount, CurrentPrice_Currency  FROM Courses WHERE Title LIKE {"%" +search +"%"} LIMIT {limit} OFFSET {offset}";
+            FormattableString query = $@"
+                SELECT 
+                    Id, 
+                    Title, 
+                    LogoPath, 
+                    Author, 
+                    Rating, 
+                    FullPrice_Amount, 
+                    FullPrice_Currency, 
+                    CurrentPrice_Amount, 
+                    CurrentPrice_Currency  
+                FROM 
+                    Courses 
+                WHERE 
+                    Title LIKE {"%" +search +"%"} 
+                ORDER BY { orderby} {direction}
+                LIMIT {limit} 
+                OFFSET {offset}";
+
             DataSet ds = await db.QueryAsync(query);
             
             var dt = ds.Tables[0];

@@ -53,7 +53,7 @@ namespace mvc.Models.Services.Application
                 return corso;
         }
 
-        public async Task<List<CourseViewModel>> GetCoursesAsync(string search, int page)
+        public async Task<List<CourseViewModel>> GetCoursesAsync(string search, int page, string orderby, bool ascending)
         {
             // mappatura tra viewmodel e classe ef
             // List<CourseViewModel> courses = await dbContext.Courses.Select(course =>
