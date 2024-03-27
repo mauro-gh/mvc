@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.Options;
 using mvc.Models.Options;
+using mvc.Models.ValueObjects;
 
 namespace mvc.Models.Services.Infrastructure
 {
@@ -37,6 +38,11 @@ namespace mvc.Models.Services.Infrastructure
             var sqliteParameters = new List<SqliteParameter>();
             for (var i = 0; i < queryArguments.Length; i++)
             {
+                // salto creazione sqlparameter per order by
+                if (queryArguments[i] is Sql)
+                {
+                    continue;
+                }
                 var parameter = new SqliteParameter(i.ToString(), queryArguments[i]);
                 sqliteParameters.Add(parameter);
                 queryArguments[i] = "@" + i; // l'argomento diventa es @0 @1
@@ -65,7 +71,8 @@ namespace mvc.Models.Services.Infrastructure
                             i++;
                             DataTable dt = new DataTable($"Tabella {i}");
                             ds.Tables.Add(dt);
-                            dt.Load(reader);                            
+                            dt.Load(reader); 
+                            //logger.LogInformation("Rows:{0}", dt.Rows.Count);                           
                         } while (!reader.IsClosed);
 
 

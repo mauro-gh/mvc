@@ -80,10 +80,49 @@ namespace mvc.Models.Services.Application
             page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
             int limit = coursesOptions.CurrentValue.PerPage;
             int offset = (page -1) * 10;
+              // sanitizzazione del orderby (l'utente puo' scrivere qualsiasi cosa)
+            if (orderby == "CurrentPrice")
+            {
+                orderby = "CurrentPrice_Amount";
+            }
+
+            var orderOptions = coursesOptions.CurrentValue.Order;
+            if (!orderOptions.Allow.Contains(orderby))
+            {
+                // valori di default da setting
+                orderby = orderOptions.By;
+                ascending = orderOptions.Ascending;
+            }    
+
+
+            // creazione query base
+            IQueryable<Course> baseQuery = dbContext.Courses;
+
+            // in base a ordinamento aggiungiamo pezzi di query
+
+            switch (orderby)
+            {
+                case "Title":
+                    if (ascending)
+                    {
+                        baseQuery = baseQuery.OrderBy(course => course.Title);
+                    }
+                    else
+                    {
+                        baseQuery = baseQuery.OrderByDescending(course => course.Title);
+                    }
+                    break;
+
+                
+                default:
+                    break;
+            }
+
+
 
 
             // separare query ed esecuzione
-            IQueryable<CourseViewModel> queryLinq = dbContext.Courses
+            IQueryable<CourseViewModel> queryLinq = baseQuery
             .Where(course => course.Title.Contains(search, StringComparison.InvariantCultureIgnoreCase))  // clausola WHERE
             .Skip(offset)       // salta i primi N record --> offset
             .Take(limit)        // prende i successivi N record --> limit

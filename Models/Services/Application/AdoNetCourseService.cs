@@ -8,6 +8,7 @@ using Microsoft.Extensions.Options;
 using mvc.Models.Exceptions;
 using mvc.Models.Options;
 using mvc.Models.Services.Infrastructure;
+using mvc.Models.ValueObjects;
 using mvc.Models.ViewModels;
 using SQLitePCL;
 
@@ -80,6 +81,11 @@ namespace mvc.Models.Services.Application
             int offset = (page -1) * 10;
 
             // sanitizzazione del orderby (l'utente puo' scrivere qualsiasi cosa)
+            if (orderby == "CurrentPrice")
+            {
+                orderby = "CurrentPrice_Amount";
+            }
+
             var orderOptions = coursesOptions.CurrentValue.Order;
             if (!orderOptions.Allow.Contains(orderby))
             {
@@ -87,11 +93,6 @@ namespace mvc.Models.Services.Application
                 orderby = orderOptions.By;
                 ascending = orderOptions.Ascending;
             }    
-
-            if (orderby == "CurrentPrice")
-            {
-                orderby = "CurrentPrice_Amount";
-            }
 
             // operatore terniario
             string direction = ascending ? "ASC" : "DESC";
@@ -113,10 +114,10 @@ namespace mvc.Models.Services.Application
                 FROM 
                     Courses 
                 WHERE 
-                    Title LIKE {"%" +search +"%"} 
-                ORDER BY { orderby} {direction}
+                    Title LIKE {"%" +search +"%"}
+                    ORDER BY {(Sql) orderby} {(Sql) direction}
                 LIMIT {limit} 
-                OFFSET {offset}";
+                OFFSET {offset}"; 
 
             DataSet ds = await db.QueryAsync(query);
             
