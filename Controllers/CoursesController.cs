@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using mvc.Models.InputModels;
 using mvc.Models.Services.Application;
 using mvc.Models.ViewModels;
 
@@ -31,10 +32,11 @@ namespace mvc.Controllers
         //     _logger = logger;
         // }
 
-        public async Task<IActionResult> Index([FromQuery]string search = null, int page = 1, string orderby = "CurrentPrice",bool ascending = true)
+        // parametri prima: string search = null, int page = 1, string orderby = "CurrentPrice",bool ascending = true
+        public async Task<IActionResult> Index([FromQuery]CourseListInputModel model)
         {
             // questo metodo si occupa anche della ricerca
-            List<CourseViewModel> courses = await cs.GetCoursesAsync(search, page, orderby, ascending);
+            List<CourseViewModel> courses = await cs.GetCoursesAsync(model.Search, model.Page, model.OrderBy, model.Ascending);
 
             ViewData["ViewDataTitle"] = "Catalogo dei corsi";
             

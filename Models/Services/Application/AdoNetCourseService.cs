@@ -76,16 +76,10 @@ namespace mvc.Models.Services.Application
         public async Task<List<CourseViewModel>> GetCoursesAsync(string search, int page, string orderby, bool ascending)
         {
             // logica di sanitizzazione
+            search = search is null ? "" : search;
             page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
             int limit = coursesOptions.CurrentValue.PerPage;
-            int offset = (page -1) * 10;
-
-            // sanitizzazione del orderby (l'utente puo' scrivere qualsiasi cosa)
-            if (orderby == "CurrentPrice")
-            {
-                orderby = "CurrentPrice_Amount";
-            }
-
+            int offset = (page -1) * limit;
             var orderOptions = coursesOptions.CurrentValue.Order;
             if (!orderOptions.Allow.Contains(orderby))
             {
@@ -93,6 +87,14 @@ namespace mvc.Models.Services.Application
                 orderby = orderOptions.By;
                 ascending = orderOptions.Ascending;
             }    
+
+
+            // sanitizzazione del orderby (l'utente puo' scrivere qualsiasi cosa)
+            if (orderby == "CurrentPrice")
+            {
+                orderby = "CurrentPrice_Amount";
+            }
+
 
             // operatore terniario
             string direction = ascending ? "ASC" : "DESC";
