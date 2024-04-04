@@ -38,8 +38,8 @@ namespace mvc.Models.InputModels
             }  
 
 
-            search = search is null ? "" : search;
-            page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
+            Search = search is null ? "" : search;
+            Page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
             OrderBy = orderby;
             Ascending = ascending;
 

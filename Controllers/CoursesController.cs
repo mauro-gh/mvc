@@ -36,6 +36,7 @@ namespace mvc.Controllers
         public async Task<IActionResult> Index([FromQuery]CourseListInputModel model)
         {
             // questo metodo si occupa anche della ricerca
+            // TODO, sostituire tutti i parametri col modello
             List<CourseViewModel> courses = await cs.GetCoursesAsync(model.Search, model.Page, model.OrderBy, model.Ascending);
 
             ViewData["ViewDataTitle"] = "Catalogo dei corsi";
