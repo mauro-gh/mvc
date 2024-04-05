@@ -1,5 +1,5 @@
 
-@model List<CourseViewModel>
+@model CourseListViewModel
     
 
 
@@ -11,7 +11,7 @@
     <div class="col-md-4  d-flex align-items-center  " >
         <form asp-controller="Courses" asp-action="Index" method="get">
             <div class="input-group">
-                <input type="text" name="search" placeholder="Cerca...">
+                <input type="text" name="search" placeholder="Cerca..." value="@Model.Input.Search">
                 <div class="input-group-append">
                     <button><i class="input-group-text fa-solid fa-magnifying-glass"></i></button>
                 </div>
@@ -30,7 +30,7 @@
 </div>
 
 
-@foreach(CourseViewModel course in Model)
+@foreach(CourseViewModel course in Model.Courses)
 {
 <div class="row border-top border-primary">
     <div class="col-md-1 ">

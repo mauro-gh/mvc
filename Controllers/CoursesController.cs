@@ -40,9 +40,13 @@ namespace mvc.Controllers
             List<CourseViewModel> courses = await cs.GetCoursesAsync(model.Search, model.Page, model.OrderBy, model.Ascending);
 
             ViewData["ViewDataTitle"] = "Catalogo dei corsi";
+
+            CourseListViewModel viewModel = new CourseListViewModel();
+            viewModel.Courses = courses;
+            viewModel.Input =  model;
             
             // Passo elenco alla view
-            return View(courses);          
+            return View(viewModel);          
         }
 
         // public async Task<IActionResult> Index2()
