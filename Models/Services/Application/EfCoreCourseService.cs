@@ -53,7 +53,7 @@ namespace mvc.Models.Services.Application
                 return corso;
         }
 
-        public async Task<List<CourseViewModel>> GetCoursesAsync(string search, int page, string orderby, bool ascending)
+        public async Task<ListViewModel<CourseViewModel>> GetCoursesAsync(string search, int page, string orderby, bool ascending)
         {
             // mappatura tra viewmodel e classe ef
             // List<CourseViewModel> courses = await dbContext.Courses.Select(course =>
@@ -124,11 +124,9 @@ namespace mvc.Models.Services.Application
             // separare query ed esecuzione
             IQueryable<CourseViewModel> queryLinq = baseQuery
             .Where(course => course.Title.Contains(search, StringComparison.InvariantCultureIgnoreCase))  // clausola WHERE
-            .Skip(offset)       // salta i primi N record --> offset
-            .Take(limit)        // prende i successivi N record --> limit
             .AsNoTracking()     // non traccia le modifiche
             .Select(course =>
-                new CourseViewModel
+                new CourseViewModel     // sostituibile con CourseViewModel.FromEntity(course)
                 {
                     Id = course.Id,
                     Title = course.Title,
@@ -140,14 +138,24 @@ namespace mvc.Models.Services.Application
                 });
             //.OrderBy(course => course.Title);
             
-            
-            List<CourseViewModel> courses = await queryLinq.ToListAsync();
+            // la query viene inviata SOLO in questo punto, prima era solo preparata
+            List<CourseViewModel> courses = await queryLinq
+                    .Skip(offset)       // salta i primi N record --> offset
+                    .Take(limit)        // prende i successivi N record --> limit
+                    .ToListAsync();
+            // esegue la query preparata prima, senza skip e take
+            int totalCount = await queryLinq.CountAsync();
+
+            ListViewModel<CourseViewModel> result = new ListViewModel<CourseViewModel>();
+            result.Results = courses;
+            result.TotalCount = totalCount;
+
 
             // eventualmente scorrere le liste (IEnumerable<>)
-            foreach (CourseViewModel c in courses)
-            {
-                     string corso = c.Title;
-            }
+            // foreach (CourseViewModel c in courses)
+            // {
+            //          string corso = c.Title;
+            // }
 
             // e mai scorrere le query link perchè verrebbero rieseguite una seconda volta (IQueryable<>)
             // foreach (CourseViewModel c in queryLinq)
@@ -155,7 +163,7 @@ namespace mvc.Models.Services.Application
             //          string corso = c.Title;
             // }
 
-            return courses;
+            return result;
 
         }
     }

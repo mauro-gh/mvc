@@ -24,7 +24,7 @@
 
 <!-- inserire qui ordinamento -->
 <div class="row">
-    <div class="col-md-1 "></div>
+    <div class="col-md-1 ">@Model.Courses.TotalCount</div>
     <div class="col-md-5 "><a asp-route-orderby="Title" asp-route-ascending="@(Model.Input.OrderBy == "Title" ? !Model.Input.Ascending : true)" asp-route-search="@Model.Input.Search">Titolo @if(Model.Input.OrderBy == "Title") {<i class="fa fa-caret-@(Model.Input.Ascending ? "up" : "down")" aria-hidden="true"></i>}</a></div>
     <div class="col-md-2 "><a asp-route-orderby="Rating" asp-route-ascending="@(Model.Input.OrderBy == "Rating" ? !Model.Input.Ascending : true)" asp-route-search="@Model.Input.Search">Valutazione @if(Model.Input.OrderBy == "Rating") {<i class="fa fa-caret-@(Model.Input.Ascending ? "up" : "down")" aria-hidden="true"></i>}</a></div>
     <div class="col-md-2 "><a asp-route-orderby="CurrentPrice" asp-route-ascending="@(Model.Input.OrderBy == "CurrentPrice" ? !Model.Input.Ascending : true)" asp-route-search="@Model.Input.Search">Prezzo @if(Model.Input.OrderBy == "CurrentPrice") {<i class="fa fa-caret-@(Model.Input.Ascending ? "up" : "down")" aria-hidden="true"></i>}</a></div>
@@ -32,7 +32,7 @@
 </div>
 
 
-@foreach(CourseViewModel course in Model.Courses)
+@foreach(CourseViewModel course in Model.Courses.Results)
 {
 <div class="row border-top border-primary">
     <div class="col-md-1 ">
@@ -77,16 +77,59 @@
 
 }
 
+@{
+    // calcolo pagine: corsi totali in tabella / corsi da visualizzare (es. 32 / 10)
+    int totalPages = Convert.ToInt32(Math.Ceiling(Model.Courses.TotalCount / (decimal) Model.Input.Limit));
+    int currentPage = Model.Input.Page;
+}
+
 <nav aria-label="Page navigation example">
   <ul class="pagination d-flex justify-content-center mt-3 pagination-sm">
 
+    @{
 
-    <li class="page-item active"><a class="page-link"  asp-route-page="1" >Page 1</a></li>
+        // pagina precedente
+        if (currentPage > 1)
+        {
+                <li class="page-item">
+                    <a class="page-link" asp-route-orderby="@Model.Input.OrderBy" asp-route-ascending="@Model.Input.Ascending" asp-route-search="@Model.Input.Search" asp-route-page="@(currentPage-1)"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
+                </li>
+        }
 
-    <li class="page-item"><a class="page-link" asp-route-page="2">Page 2</a></li>
+        // elenco pagine
+        for (int i = 1; i <= totalPages; i++)
+        {
+            if (i == currentPage)
+            {
+                <li class="page-item active">
+                    <a class="page-link" asp-route-orderby="@Model.Input.OrderBy" asp-route-ascending="@Model.Input.Ascending" asp-route-search="@Model.Input.Search" asp-route-page="@i" >@i <span class="sr-only">(current)</span></a>
+                </li>
+            }
+            else
+            {
+                <li class="page-item">
+                    <a class="page-link" asp-route-orderby="@Model.Input.OrderBy" asp-route-ascending="@Model.Input.Ascending" asp-route-search="@Model.Input.Search" asp-route-page="@i">@i</a>
+                </li>
+            }               
 
-    <li class="page-item"><a class="page-link" asp-route-page="3">Page 3</a></li>
+        }
+
+        // pagina successiva
+        if (currentPage < totalPages)
+        {
+                <li class="page-item">
+                    <a class="page-link" asp-route-page="@(currentPage+1)"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
+                </li>
+        }
+
+    }
+
+
     
+
+    <!--  -->
+
+        
 
   </ul>
 </nav>

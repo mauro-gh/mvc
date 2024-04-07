@@ -73,7 +73,7 @@ namespace mvc.Models.Services.Application
             
         }
 
-        public async Task<List<CourseViewModel>> GetCoursesAsync(string search, int page, string orderby, bool ascending)
+        public async Task<ListViewModel<CourseViewModel>> GetCoursesAsync(string search, int page, string orderby, bool ascending)
         {
             // logica di sanitizzazione
             search = search is null ? "" : search;
@@ -101,7 +101,8 @@ namespace mvc.Models.Services.Application
 
 
 
-            
+            // prima query: tutti i corsi in base alla ricerca impostata
+            // seconda query: per ottenere il totalCount
             FormattableString query = $@"
                 SELECT 
                     Id, 
@@ -119,24 +120,36 @@ namespace mvc.Models.Services.Application
                     Title LIKE {"%" +search +"%"}
                     ORDER BY {(Sql) orderby} {(Sql) direction}
                 LIMIT {limit} 
-                OFFSET {offset}"; 
+                OFFSET {offset};
+                SELECT
+                    COUNT(*)
+                FROM 
+                    Courses 
+                WHERE 
+                    Title LIKE {"%" +search +"%"}
+                "; 
 
             DataSet ds = await db.QueryAsync(query);
             
-            var dt = ds.Tables[0];
+            var dtCorsi = ds.Tables[0];
 
             var courseList = new List<CourseViewModel>();
 
-            foreach (DataRow dr in dt.Rows)
+            foreach (DataRow dr in dtCorsi.Rows)
             {
                 CourseViewModel course = CourseViewModel.FromDataRow(dr);
                 courseList.Add(course);
 
             }
+
+            ListViewModel<CourseViewModel> result = new ListViewModel<CourseViewModel>();
+
+            result.Results = courseList;
+            result.TotalCount = Convert.ToInt32(ds.Tables[1].Rows[0][0]);
         
 
 
-            return courseList;
+            return result;
         }
 
         public string Version => throw new NotImplementedException();
