@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using mvc.Models.Entities;
+using mvc.Models.InputModels;
 using mvc.Models.Options;
 using mvc.Models.Services.Infrastructure;
 using mvc.Models.ViewModels;
@@ -24,6 +25,8 @@ namespace mvc.Models.Services.Application
         }
 
         public string Version => "1.0";
+
+
 
         public async Task<CourseDetailViewModel> GetCourseAsync(int id)
         {
@@ -53,7 +56,7 @@ namespace mvc.Models.Services.Application
                 return corso;
         }
 
-        public async Task<ListViewModel<CourseViewModel>> GetCoursesAsync(string search, int page, string orderby, bool ascending)
+        public async Task<ListViewModel<CourseViewModel>> GetCoursesAsync(CourseListInputModel model)
         {
             // mappatura tra viewmodel e classe ef
             // List<CourseViewModel> courses = await dbContext.Courses.Select(course =>
@@ -75,24 +78,24 @@ namespace mvc.Models.Services.Application
             // usare AsNoTracking() se non serve il change tracker (tracciamento delle modifiche)
 
             // logica di sanitizzazione
-            search = search ?? "";
+            //search = search ?? "";
 
-            page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
-            int limit = coursesOptions.CurrentValue.PerPage;
-            int offset = (page -1) * 10;
+            //page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
+            //int limit = coursesOptions.CurrentValue.PerPage;
+            //int offset = (page -1) * 10;
               // sanitizzazione del orderby (l'utente puo' scrivere qualsiasi cosa)
-            if (orderby == "CurrentPrice")
-            {
-                orderby = "CurrentPrice_Amount";
-            }
+            //if (orderby == "CurrentPrice")
+            //{
+            //    orderby = "CurrentPrice_Amount";
+            //}
 
-            var orderOptions = coursesOptions.CurrentValue.Order;
-            if (!orderOptions.Allow.Contains(orderby))
-            {
+            //var orderOptions = coursesOptions.CurrentValue.Order;
+            //if (!orderOptions.Allow.Contains(orderby))
+            //{
                 // valori di default da setting
-                orderby = orderOptions.By;
-                ascending = orderOptions.Ascending;
-            }    
+            //    orderby = orderOptions.By;
+            //    ascending = orderOptions.Ascending;
+            //}    
 
 
             // creazione query base
@@ -100,10 +103,10 @@ namespace mvc.Models.Services.Application
 
             // in base a ordinamento aggiungiamo pezzi di query
 
-            switch (orderby)
+            switch (model.OrderBy)
             {
                 case "Title":
-                    if (ascending)
+                    if (model.Ascending)
                     {
                         baseQuery = baseQuery.OrderBy(course => course.Title);
                     }
@@ -112,6 +115,37 @@ namespace mvc.Models.Services.Application
                         baseQuery = baseQuery.OrderByDescending(course => course.Title);
                     }
                     break;
+
+                case "Rating":
+                    if (model.Ascending)
+                    {
+                        baseQuery = baseQuery.OrderBy(course => course.Rating);
+                    }
+                    else
+                    {
+                        baseQuery = baseQuery.OrderByDescending(course => course.Rating);
+                    }
+                    break;
+                case "CurrentPrice":
+                    if (model.Ascending)
+                    {
+                        baseQuery = baseQuery.OrderBy(course => course.CurrentPriceAmount);
+                    }
+                    else
+                    {
+                        baseQuery = baseQuery.OrderByDescending(course => course.CurrentPriceAmount);
+                    }
+                    break;
+                case "Id":
+                    if (model.Ascending)
+                    {
+                        baseQuery = baseQuery.OrderBy(course => course.Id);
+                    }
+                    else
+                    {
+                        baseQuery = baseQuery.OrderByDescending(course => course.Id);
+                    }
+                    break;                    
 
                 
                 default:
@@ -123,7 +157,7 @@ namespace mvc.Models.Services.Application
 
             // separare query ed esecuzione
             IQueryable<CourseViewModel> queryLinq = baseQuery
-            .Where(course => course.Title.Contains(search, StringComparison.InvariantCultureIgnoreCase))  // clausola WHERE
+            .Where(course => course.Title.Contains(model.Search, StringComparison.InvariantCultureIgnoreCase))  // clausola WHERE
             .AsNoTracking()     // non traccia le modifiche
             .Select(course =>
                 new CourseViewModel     // sostituibile con CourseViewModel.FromEntity(course)
@@ -140,8 +174,8 @@ namespace mvc.Models.Services.Application
             
             // la query viene inviata SOLO in questo punto, prima era solo preparata
             List<CourseViewModel> courses = await queryLinq
-                    .Skip(offset)       // salta i primi N record --> offset
-                    .Take(limit)        // prende i successivi N record --> limit
+                    .Skip(model.Offset)       // salta i primi N record --> offset
+                    .Take(model.Limit)        // prende i successivi N record --> limit
                     .ToListAsync();
             // esegue la query preparata prima, senza skip e take
             int totalCount = await queryLinq.CountAsync();
@@ -166,6 +200,35 @@ namespace mvc.Models.Services.Application
             return result;
 
         }
+
+        public async Task<List<CourseViewModel>> GetMostRecentCoursesAsync()
+        {
+            CourseListInputModel inputModel = new CourseListInputModel(
+                search: "",
+                page: 1,
+                orderby: "Id",
+                ascending: false,
+                limit: coursesOptions.CurrentValue.InHome,
+                orderOptions: coursesOptions.CurrentValue.Order);
+
+                ListViewModel<CourseViewModel> result = await GetCoursesAsync(inputModel);
+                return result.Results;
+        }
+
+        public async Task<List<CourseViewModel>> GetBestRatingCoursesAsync()
+        {
+            CourseListInputModel inputModel = new CourseListInputModel(
+                search: "",
+                page: 1,
+                orderby: "Rating",
+                ascending: false,
+                limit: coursesOptions.CurrentValue.InHome,
+                orderOptions: coursesOptions.CurrentValue.Order);
+
+                ListViewModel<CourseViewModel> result = await GetCoursesAsync(inputModel);
+                return result.Results;
+        }
+
     }
 }
 

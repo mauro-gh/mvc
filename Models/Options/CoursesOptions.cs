@@ -13,10 +13,12 @@ namespace mvc.Models.Options
     {
         public int PerPage { get; set; }
 
-        public CousesOrderOptions Order { get; set; }
+        public int InHome {get;set;}
+
+        public CoursesOrderOptions Order { get; set; }
     }
 
-    public partial class CousesOrderOptions
+    public partial class CoursesOrderOptions
     {
 
         public string By { get; set; }

@@ -37,7 +37,7 @@ namespace mvc.Controllers
         {
             // questo metodo si occupa anche della ricerca
             // TODO, sostituire tutti i parametri col modello
-            ListViewModel<CourseViewModel> courses = await cs.GetCoursesAsync(model.Search, model.Page, model.OrderBy, model.Ascending);
+            ListViewModel<CourseViewModel> courses = await cs.GetCoursesAsync(model);
 
             ViewData["ViewDataTitle"] = "Catalogo dei corsi";
 

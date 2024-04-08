@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.Extensions.Options;
 using mvc.Models.Exceptions;
+using mvc.Models.InputModels;
 using mvc.Models.Options;
 using mvc.Models.Services.Infrastructure;
 using mvc.Models.ValueObjects;
@@ -73,31 +74,39 @@ namespace mvc.Models.Services.Application
             
         }
 
-        public async Task<ListViewModel<CourseViewModel>> GetCoursesAsync(string search, int page, string orderby, bool ascending)
+        public async Task<ListViewModel<CourseViewModel>> GetCoursesAsync(CourseListInputModel model)
         {
-            // logica di sanitizzazione
-            search = search is null ? "" : search;
-            page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
-            int limit = coursesOptions.CurrentValue.PerPage;
-            int offset = (page -1) * limit;
-            var orderOptions = coursesOptions.CurrentValue.Order;
-            if (!orderOptions.Allow.Contains(orderby))
-            {
-                // valori di default da setting
-                orderby = orderOptions.By;
-                ascending = orderOptions.Ascending;
-            }    
 
-
+            string orderby = model.OrderBy;
             // sanitizzazione del orderby (l'utente puo' scrivere qualsiasi cosa)
             if (orderby == "CurrentPrice")
             {
                 orderby = "CurrentPrice_Amount";
             }
-
-
+            
             // operatore terniario
-            string direction = ascending ? "ASC" : "DESC";
+            string direction = model.Ascending ? "ASC" : "DESC";
+
+
+
+
+            // logica di sanitizzazione
+            //search = search is null ? "" : search;
+            //page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
+            //int limit = coursesOptions.CurrentValue.PerPage;
+            //int offset = (page -1) * limit;
+            //var orderOptions = coursesOptions.CurrentValue.Order;
+            //if (!orderOptions.Allow.Contains(orderby))
+            //{
+                // valori di default da setting
+            //    orderby = orderOptions.By;
+            //    ascending = orderOptions.Ascending;
+            //}    
+
+
+
+
+
 
 
 
@@ -117,16 +126,16 @@ namespace mvc.Models.Services.Application
                 FROM 
                     Courses 
                 WHERE 
-                    Title LIKE {"%" +search +"%"}
+                    Title LIKE {"%" +model.Search +"%"}
                     ORDER BY {(Sql) orderby} {(Sql) direction}
-                LIMIT {limit} 
-                OFFSET {offset};
+                LIMIT {model.Limit} 
+                OFFSET {model.Offset};
                 SELECT
                     COUNT(*)
                 FROM 
                     Courses 
                 WHERE 
-                    Title LIKE {"%" +search +"%"}
+                    Title LIKE {"%" +model.Search +"%"}
                 "; 
 
             DataSet ds = await db.QueryAsync(query);
@@ -143,13 +152,48 @@ namespace mvc.Models.Services.Application
             }
 
             ListViewModel<CourseViewModel> result = new ListViewModel<CourseViewModel>();
-
+            // lista corsi (solo 10)
             result.Results = courseList;
+            // totale corsi (tutti quelli presenti in tabella)
             result.TotalCount = Convert.ToInt32(ds.Tables[1].Rows[0][0]);
         
 
 
             return result;
+        }
+
+        public async Task<List<CourseViewModel>> GetBestRatingCoursesAsync()
+        {
+            CourseListInputModel inputModel = new CourseListInputModel(
+                search: "",
+                page: 1,
+                orderby: "Rating",
+                ascending: false,
+                limit: coursesOptions.CurrentValue.InHome,
+                orderOptions: coursesOptions.CurrentValue.Order);       
+
+            ListViewModel<CourseViewModel> result = await GetCoursesAsync(inputModel);
+            return result.Results;
+
+        }
+
+        public async Task<List<CourseViewModel>> GetMostRecentCoursesAsync()
+        {
+            
+            CourseListInputModel inputModel = new CourseListInputModel(
+                search: "",
+                page: 1,
+                orderby: "Id",
+                ascending: false,
+                limit: coursesOptions.CurrentValue.InHome,
+                orderOptions: coursesOptions.CurrentValue.Order);       
+
+            ListViewModel<CourseViewModel> result = await GetCoursesAsync(inputModel);
+            return result.Results;
+
+
+
+
         }
 
         public string Version => throw new NotImplementedException();

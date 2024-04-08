@@ -25,11 +25,10 @@ namespace mvc.Models.InputModels
 
         // TODO lezione 91
 
-        public CourseListInputModel(string search, int page, string orderby, bool ascending, CoursesOptions coursesOptions)
+        public CourseListInputModel(string search, int page, string orderby, bool ascending, int limit, CoursesOrderOptions orderOptions)
         {
 
             // logica di sanitizzazione
-            var orderOptions = coursesOptions.Order;
             if (!orderOptions.Allow.Contains(orderby))
             {
                 // valori di default da setting
@@ -42,9 +41,8 @@ namespace mvc.Models.InputModels
             Page = Math.Max(1, page); // sanitizzare il valore, potrebbe arrivare un -40
             OrderBy = orderby;
             Ascending = ascending;
-
-
-            Limit = coursesOptions.PerPage;
+            
+            Limit = Math.Max(1, limit);
             Offset = (page -1) * Limit;
             
             

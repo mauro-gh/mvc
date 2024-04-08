@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Caching.Memory;
+using mvc.Models.InputModels;
 using mvc.Models.ViewModels;
 
 namespace mvc.Models.Services.Application
@@ -37,22 +38,55 @@ namespace mvc.Models.Services.Application
 
         }
 
-        public Task<ListViewModel<CourseViewModel>> GetCoursesAsync(string search, int page, string orderby, bool ascending)
+        public Task<ListViewModel<CourseViewModel>> GetCoursesAsync(CourseListInputModel model)
         {
             TimeSpan time60sec = TimeSpan.FromSeconds(60);
 
             // prima lo cerca in cache, se non lo trova lo cerca dal DB
             // e lo associa SEMPRE alla stessa chiave Courses, quindi in caso di
             // search valorizzato non restituisce i valori aggiornati
-            Task<ListViewModel<CourseViewModel>?> task = memoryCache.GetOrCreateAsync($"Courses{search}-{page}-{orderby}-{ascending}", cacheEntry =>
+            Task<ListViewModel<CourseViewModel>?> task = memoryCache.GetOrCreateAsync($"Courses{model.Page}-{model.OrderBy}-{model.Ascending}", cacheEntry =>
             {
                 cacheEntry.SetSize(100);
                 cacheEntry.SetAbsoluteExpiration(time60sec);
-                return courseService.GetCoursesAsync(search, page, orderby, ascending);
+                return courseService.GetCoursesAsync(model);
             });
 
             return task;
 
+        }
+
+        public Task<List<CourseViewModel>> GetBestRatingCoursesAsync()
+        {
+
+            TimeSpan time60sec = TimeSpan.FromSeconds(60);
+
+            Task<List<CourseViewModel>?> task = memoryCache.GetOrCreateAsync($"BestRatingCourses", cacheEntry  =>
+            {
+                cacheEntry.SetSize(100);
+                cacheEntry.SetAbsoluteExpiration(time60sec);
+                return courseService.GetBestRatingCoursesAsync();
+
+            });
+
+            return task;
+
+
+        }
+
+        public Task<List<CourseViewModel>> GetMostRecentCoursesAsync()
+        {
+            TimeSpan time60sec = TimeSpan.FromSeconds(60);
+
+            Task<List<CourseViewModel>?> task = memoryCache.GetOrCreateAsync($"MostRecentCourses", cacheEntry  =>
+            {
+                cacheEntry.SetSize(100);
+                cacheEntry.SetAbsoluteExpiration(time60sec);
+                return courseService.GetMostRecentCoursesAsync();
+
+            });
+
+            return task;
         }
 
         public string Version => "1.0";

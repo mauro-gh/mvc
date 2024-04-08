@@ -1,21 +1,121 @@
 ﻿@{
-    //ViewData["Title"] = "Home Page"; 
+    @model HomeViewModel
     Layout = "_Layout";
 }
 
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <h2>Index del Home Controller</h2>
+</div>
 
-    <p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Alias cumque perspiciatis voluptas, rem aspernatur non dolores sit incidunt! Sequi cumque voluptate quas alias, pariatur beatae a molestiae quidem optio iste!</p>
+<div class="jumbotron">
+    <h1 class="display-4">@ViewData["Title"]</h1>
+    <p class="lead">Impara in maniera facile e divertente con i nostri corsi online!<br>Scegli da un vasto catalogo sempre a tua disposizione.</p>
+    <hr class="my-4">
+    <p><a asp-controller="Courses" asp-action="Index" class="btn btn-primary">Sfoglia il catalogo dei corsi <i class="fas fa-angle-right"></i></a></p>
+</div>
 
-    
-    <p>Quod itaque velit voluptatem debitis facere? Aspernatur quo asperiores id repellat soluta voluptates quasi nulla tenetur natus, saepe, vero quis quam nostrum perferendis rem quod vitae incidunt repudiandae dolor magni!</p>
-    <p>Nulla, maiores sapiente a itaque sequi, dicta eligendi atque et deleniti laboriosam veritatis autem iste nam velit impedit assumenda maxime veniam? Omnis facilis dignissimos accusamus, ducimus consequuntur ullam dolorum nulla.</p>
-    <p>Velit neque delectus corrupti facilis dolorum sit consectetur eius quod reiciendis saepe molestias similique soluta vero, possimus dolores nulla recusandae tempore ab mollitia, libero culpa magnam cupiditate minima modi. Provident!</p>
-    <p>Veniam dolorum amet natus, eos, ab quo animi sed mollitia temporibus recusandae et, voluptatem eligendi aspernatur. Quod, praesentium repellat rem nostrum veritatis, cum modi in doloremque porro eaque repellendus consectetur.</p>
 
+
+<section>
+    <h2>Aggiunti di recente</h2>
+    @foreach (var course in Model.MostRecentCourses)
+    {
+ 
+        <div class="row border-top border-primary">
+            <div class="col-md-1 ">
+                <img src="@course.LogoPath" title="@course.LogoPath" width="52">
+                
+            </div>
+            <div class="col-md-5">
+                <h2>(@course.Id) @course.Title</h2>
+                <author>di @course.Author </author>
+            </div>
+
+            <div class="col-md-2 rating" title=@course.Rating>
+                
+                @for(int i = 1; i <=5; i++)
+                {
+                    if (course.Rating >= i)
+                    {
+                        <i class="fas fa-star"></i>
+                    }
+                    else if (course.Rating > i -1 )
+                    {
+                        <i class="fas fa-star-half-alt"></i>
+                    }
+                    else
+                    {
+                        <i class="far fa-star"></i>
+                    }
+
+                }
+
+
+
+            </div>
+            <div class="col-md-2 price">
+                @course.CurrentPriceAmount<br /><s>@course.FullPriceAmount</s>
+
+            </div>
+            <div class="col-md-1">
+                <a class="btn btn-outline-info btn-sm" asp-action="Detail" asp-controller="Courses" asp-route-id="@course.Id">Dettaglio corso @course.Id</a>        
+            </div>
+        </div>
+    }
+</section>
+
+<section>
+    <h2>I migliori di sempre</h2>
+    @foreach (var course in Model.BestRatingCourses)
+    {
+
+        <div class="row border-top border-primary">
+            <div class="col-md-1 ">
+                <img src="@course.LogoPath" title="@course.LogoPath" width="52">
+                
+            </div>
+            <div class="col-md-5">
+                <h2>(@course.Id) @course.Title</h2>
+                <author>di @course.Author </author>
+            </div>
+
+            <div class="col-md-2 rating" title=@course.Rating>
+                
+                @for(int i = 1; i <=5; i++)
+                {
+                    if (course.Rating >= i)
+                    {
+                        <i class="fas fa-star"></i>
+                    }
+                    else if (course.Rating > i -1 )
+                    {
+                        <i class="fas fa-star-half-alt"></i>
+                    }
+                    else
+                    {
+                        <i class="far fa-star"></i>
+                    }
+
+                }
+
+
+
+            </div>
+            <div class="col-md-2 price">
+                @course.CurrentPriceAmount<br /><s>@course.FullPriceAmount</s>
+
+            </div>
+            <div class="col-md-1">
+                <a class="btn btn-outline-info btn-sm" asp-action="Detail" asp-controller="Courses" asp-route-id="@course.Id">Dettaglio corso @course.Id</a>        
+            </div>
+        </div>
+
+    }
+</section>
+
+
+<div class="text-center">
     <environment include="Development">
         <strong>EnvironmentName is Development</strong>
     </environment>

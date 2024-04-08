@@ -38,7 +38,8 @@ namespace mvc.Customizations.ModelBinders
             bool.TryParse(bindingContext.ValueProvider.GetValue("Ascending").FirstValue, out bool ascending);
 
             //Creiamo l'istanza del CourseListInputModel
-            var inputModel = new CourseListInputModel(search, page, orderBy, ascending, courseOptions.CurrentValue);
+            CoursesOptions options = courseOptions.CurrentValue;
+            var inputModel = new CourseListInputModel(search, page, orderBy, ascending, options.PerPage, options.Order  );
 
             //Impostiamo il risultato per notificare che la creazione è avvenuta con successo
             bindingContext.Result =  ModelBindingResult.Success(inputModel);

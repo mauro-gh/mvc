@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using mvc.Models;
+using mvc.Models.Services.Application;
+using mvc.Models.ViewModels;
 
 namespace mvc.Controllers;
 
@@ -18,12 +20,27 @@ public class HomeController : Controller
 
 
     // Attributo per mettere nella cache del browser questo action
+    // FromService: serve a dire al model binding che questa istanza deve essere cercata
+    // tra i servizi registrati per la dependeny inhection
     [ResponseCache(CacheProfileName = "Home")]
-    public IActionResult Index()
+    public async Task<IActionResult> Index([FromServices] ICachedCourseService courseService)
     {
         ViewData["ViewDataTitle"] = "Benvenuti";
 
-        return View();
+        // dobbiamo ottenere lista nuovi corsi e lista corsi migliori,
+        // ma sempre dal servizio applicativo e non da questo controller
+
+        List<CourseViewModel> listaMiglioriCorsi = await courseService.GetBestRatingCoursesAsync();
+        List<CourseViewModel> listaCorsiRecenti = await courseService.GetMostRecentCoursesAsync();
+
+        // Creo un view model che raccolta entrambe le liste, da mostrare dal html
+        HomeViewModel viewModel = new HomeViewModel
+        {
+            BestRatingCourses = listaMiglioriCorsi,
+            MostRecentCourses = listaCorsiRecenti
+        };
+
+        return View(viewModel);
         //return Content("Sono index della home controller");
     }
 
