@@ -34,24 +34,8 @@
 
             <div class="col-md-2 rating" title=@course.Rating>
                 
-                @for(int i = 1; i <=5; i++)
-                {
-                    if (course.Rating >= i)
-                    {
-                        <i class="fas fa-star"></i>
-                    }
-                    else if (course.Rating > i -1 )
-                    {
-                        <i class="fas fa-star-half-alt"></i>
-                    }
-                    else
-                    {
-                        <i class="far fa-star"></i>
-                    }
-
-                }
-
-
+                <!-- tag helper -->
+                <stelline punteggio="@course.Rating"></stelline>
 
             </div>
             <div class="col-md-2 price">
@@ -80,27 +64,9 @@
                 <author>di @course.Author </author>
             </div>
 
-            <div class="col-md-2 rating" title=@course.Rating>
-                
-                @for(int i = 1; i <=5; i++)
-                {
-                    if (course.Rating >= i)
-                    {
-                        <i class="fas fa-star"></i>
-                    }
-                    else if (course.Rating > i -1 )
-                    {
-                        <i class="fas fa-star-half-alt"></i>
-                    }
-                    else
-                    {
-                        <i class="far fa-star"></i>
-                    }
-
-                }
-
-
-
+            <div class="col-md-2 rating" title=@course.Rating>                
+                <!-- tag helper -->
+                <stelline punteggio="@course.Rating"></stelline>
             </div>
             <div class="col-md-2 price">
                 @course.CurrentPriceAmount<br /><s>@course.FullPriceAmount</s>
