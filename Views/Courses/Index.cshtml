@@ -60,62 +60,7 @@
 
 }
 
-@{
-    // calcolo pagine: corsi totali in tabella / corsi da visualizzare (es. 32 / 10)
-    int totalPages = Convert.ToInt32(Math.Ceiling(Model.Courses.TotalCount / (decimal) Model.Input.Limit));
-    int currentPage = Model.Input.Page;
-}
-
-<nav aria-label="Page navigation example">
-  <ul class="pagination d-flex justify-content-center mt-3 pagination-sm">
-
-    @{
-
-        // pagina precedente
-        if (currentPage > 1)
-        {
-                <li class="page-item">
-                    <a class="page-link" asp-route-orderby="@Model.Input.OrderBy" asp-route-ascending="@Model.Input.Ascending" asp-route-search="@Model.Input.Search" asp-route-page="@(currentPage-1)"><i class="fa fa-angle-left" aria-hidden="true"></i></a>
-                </li>
-        }
-
-        // elenco pagine
-        for (int i = 1; i <= totalPages; i++)
-        {
-            if (i == currentPage)
-            {
-                <li class="page-item active">
-                    <a class="page-link" asp-route-orderby="@Model.Input.OrderBy" asp-route-ascending="@Model.Input.Ascending" asp-route-search="@Model.Input.Search" asp-route-page="@i" >@i <span class="sr-only">(current)</span></a>
-                </li>
-            }
-            else
-            {
-                <li class="page-item">
-                    <a class="page-link" asp-route-orderby="@Model.Input.OrderBy" asp-route-ascending="@Model.Input.Ascending" asp-route-search="@Model.Input.Search" asp-route-page="@i">@i</a>
-                </li>
-            }               
-
-        }
-
-        // pagina successiva
-        if (currentPage < totalPages)
-        {
-                <li class="page-item">
-                    <a class="page-link" asp-route-page="@(currentPage+1)"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
-                </li>
-        }
-
-    }
-
-
-    
-
-    <!--  -->
-
-        
-
-  </ul>
-</nav>
-
+<!-- calcolo pagine: spostato nel viewcomponent -->
+<vc:pagination-bar model="@Model"></vc:pagination-bar>
 
     
