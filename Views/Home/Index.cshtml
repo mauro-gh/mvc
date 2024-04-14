@@ -22,30 +22,7 @@
     @foreach (var course in Model.MostRecentCourses)
     {
  
-        <div class="row border-top border-primary">
-            <div class="col-md-1 ">
-                <img src="@course.LogoPath" title="@course.LogoPath" width="52">
-                
-            </div>
-            <div class="col-md-5">
-                <h2>(@course.Id) @course.Title</h2>
-                <author>di @course.Author </author>
-            </div>
-
-            <div class="col-md-2 rating" title=@course.Rating>
-                
-                <!-- tag helper -->
-                <stelline punteggio="@course.Rating"></stelline>
-
-            </div>
-            <div class="col-md-2 price">
-                @course.CurrentPriceAmount<br /><s>@course.FullPriceAmount</s>
-
-            </div>
-            <div class="col-md-1">
-                <a class="btn btn-outline-info btn-sm" asp-action="Detail" asp-controller="Courses" asp-route-id="@course.Id">Dettaglio corso @course.Id</a>        
-            </div>
-        </div>
+        <partial name="Courses/_CourseLine" model="@course"></partial>
     }
 </section>
 
@@ -54,29 +31,7 @@
     @foreach (var course in Model.BestRatingCourses)
     {
 
-        <div class="row border-top border-primary">
-            <div class="col-md-1 ">
-                <img src="@course.LogoPath" title="@course.LogoPath" width="52">
-                
-            </div>
-            <div class="col-md-5">
-                <h2>(@course.Id) @course.Title</h2>
-                <author>di @course.Author </author>
-            </div>
-
-            <div class="col-md-2 rating" title=@course.Rating>                
-                <!-- tag helper -->
-                <stelline punteggio="@course.Rating"></stelline>
-            </div>
-            <div class="col-md-2 price">
-                @course.CurrentPriceAmount<br /><s>@course.FullPriceAmount</s>
-
-            </div>
-            <div class="col-md-1">
-                <a class="btn btn-outline-info btn-sm" asp-action="Detail" asp-controller="Courses" asp-route-id="@course.Id">Dettaglio corso @course.Id</a>        
-            </div>
-        </div>
-
+        <partial name="Courses/_CourseLine" model="@course"></partial>
     }
 </section>
 

@@ -1,0 +1,24 @@
+@model CourseViewModel
+<div class="row border-top border-primary">
+    <div class="col-md-1 ">
+        <img src="@Model.LogoPath" title="@Model.LogoPath" width="52">
+        
+    </div>
+    <div class="col-md-5">
+        <h2>(@Model.Id) @Model.Title</h2>
+        <author>di @Model.Author </author>
+    </div>
+
+    <div class="col-md-2 rating" title=@Model.Rating>                
+        <!-- tag helper -->
+        <stelline punteggio="@Model.Rating"></stelline>
+    </div>
+    <div class="col-md-2 price">
+        @Model.CurrentPriceAmount<br /><s>@Model.FullPriceAmount</s>
+
+    </div>
+    <div class="col-md-1">
+        <a class="btn btn-outline-info btn-sm" asp-action="Detail" asp-controller="Courses" asp-route-id="@Model.Id">Dettaglio corso @Model.Id</a>        
+    </div>
+</div>
+<!--  per utilizzarlo: <partial name="Courses/_CourseLine" model="course"></partial>  -->
