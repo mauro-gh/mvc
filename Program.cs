@@ -39,8 +39,8 @@ internal class Program
         // deve preparare alla gestione di oggetti di tipo CourseService,
         // net core deve costruirlo e passarlo
         //builder.Services.AddTransient<ICourseService, CourseService>();  // versione con valori auto generati da codice
-        builder.Services.AddTransient<ICourseService, AdoNetCourseService>(); // versione con valori letti da DB con adonet
-        //builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
+        //builder.Services.AddTransient<ICourseService, AdoNetCourseService>(); // versione con valori letti da DB con adonet
+        builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
 
         //builder.Services.AddDbContext<MyCourseDbContext>(); 
         // lettura di una chiave
@@ -89,7 +89,16 @@ internal class Program
             
         }
 
+        // middleware per jpg, css, ecc...
         app.UseStaticFiles();
+
+        // endpoint routing middleware
+        app.UseRouting();
+
+        //endpoint middleware
+        app.UseEndpoints(routeBuilder =>{
+            routeBuilder.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+        });
 
 
         /*
@@ -98,11 +107,13 @@ internal class Program
         app.UseAuthorization();
         */
 
+        /*
         app.UseMvc(routeBuilder =>
         {
             // /courses/detail/5
             routeBuilder.MapRoute("default", "{controller=Home}/{action=Index}/{id?}");
         });
+        */
 
 
         /*
