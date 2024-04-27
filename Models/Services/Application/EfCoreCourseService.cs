@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using mvc.Models.Entities;
+using mvc.Models.Exceptions;
 using mvc.Models.InputModels;
 using mvc.Models.Options;
 using mvc.Models.Services.Infrastructure;
@@ -254,9 +255,18 @@ namespace mvc.Models.Services.Application
             // la affidiamo al dbcontext
             dbContext.Add(course);
 
+            try
+            {
+                await dbContext.SaveChangesAsync();
+                // detached -> added -> unchanged
+                
+            }
+            catch (DbUpdateException exc)
+            {
+                
+                throw new CourseTitleDuplicateException(title, exc);
+            }
 
-            await dbContext.SaveChangesAsync();
-            // detached -> added -> unchanged
 
             return CourseDetailViewModel.FromEntity(course);
 

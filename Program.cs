@@ -9,16 +9,13 @@ using mvc.Models.Services.Infrastructure;
 
 internal class Program
 {
+
     private static void Main(string[] args)
     {
-
-
-
         var builder = WebApplication.CreateBuilder(args);
 
         Startup startup = new Startup(builder.Configuration);
         startup.test();
-
 
         // Add services to the container.
         //builder.Services.AddControllersWithViews();
@@ -39,8 +36,8 @@ internal class Program
         // deve preparare alla gestione di oggetti di tipo CourseService,
         // net core deve costruirlo e passarlo
         //builder.Services.AddTransient<ICourseService, CourseService>();  // versione con valori auto generati da codice
-        //builder.Services.AddTransient<ICourseService, AdoNetCourseService>(); // versione con valori letti da DB con adonet
-        builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
+        builder.Services.AddTransient<ICourseService, AdoNetCourseService>(); // versione con valori letti da DB con adonet
+        //builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
 
         //builder.Services.AddDbContext<MyCourseDbContext>(); 
         // lettura di una chiave

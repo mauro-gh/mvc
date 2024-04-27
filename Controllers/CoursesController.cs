@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using mvc.Models.Exceptions;
 using mvc.Models.InputModels;
 using mvc.Models.Services.Application;
 using mvc.Models.ViewModels;
@@ -99,9 +100,28 @@ namespace mvc.Controllers
         // questa invece e' quella che riceve i valori del form di nuovo corso, e' in post
         [HttpPost]
         public async Task<IActionResult> Create([FromForm]CourseCreateInputModel inputModel){
-            // utilizzare il servizio applicativo per salvare il corso
-            CourseDetailViewModel course = await cs.CreateCourseAsync(inputModel);
-            return RedirectToAction(nameof(Index));
+            // validazioni (col ModelState)
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // TUTTO OK
+                    // utilizzare il servizio applicativo per salvare il corso
+                    CourseDetailViewModel course = await cs.CreateCourseAsync(inputModel);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (CourseTitleDuplicateException ex)
+                {
+                    // DUPLICATO, aggiungiamo errore
+                    ModelState.AddModelError("Title", ex.Message);                     
+                }
+            }
+
+            ViewData["Title"] = "Inserimento nuovo corso";
+            // restituiamo all'utente il suo input non valido
+            return View(inputModel);    
+
         }
 
 
