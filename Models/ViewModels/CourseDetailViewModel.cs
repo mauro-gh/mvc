@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
+using mvc.Models.Entities;
 
 namespace mvc.Models.ViewModels
 {
@@ -19,7 +20,7 @@ namespace mvc.Models.ViewModels
         {
             var courseDetailViewModel =new CourseDetailViewModel{
                 Title = (string) dr["Title"],
-                Description = (string) dr["Description"],
+                Description = (string) (dr["Description"] == DBNull.Value ? string.Empty : dr["Description"]),
                 Author = (string) dr["Author"],
                 LogoPath = (string) dr["LogoPath"],
                 Rating = Convert.ToDouble( dr["Rating"]),
@@ -33,6 +34,22 @@ namespace mvc.Models.ViewModels
             return courseDetailViewModel;
 
         }
+
+    public static CourseDetailViewModel FromEntity(Course course)
+    {
+        return new CourseDetailViewModel
+        {
+            Id = course.Id,
+            Title = course.Title,
+            Description = course.Description,
+            Author = course.Author,
+            LogoPath = course.LogoPath,
+            Rating = Convert.ToDouble(course.Rating),
+            CurrentPriceAmount = Convert.ToDecimal(course.CurrentPriceAmount),
+            FullPriceAmount = Convert.ToDecimal(course.FullPriceAmount),
+            Lessons = new List<LessonViewModel>()
+        };
+    }        
                 
 
     }

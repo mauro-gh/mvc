@@ -18,6 +18,7 @@ namespace mvc.Models.Services.Application
         Task<List<CourseViewModel>> GetBestRatingCoursesAsync();
 
         Task<List<CourseViewModel>> GetMostRecentCoursesAsync();
+        Task<CourseDetailViewModel> CreateCourseAsync(CourseCreateInputModel inputModel);
 
         public string Version { get; }
 

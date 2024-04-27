@@ -9,9 +9,9 @@ public partial class Lesson
 
     public int CourseId { get; private set; }
 
-    public string Title { get; private set; } = null!;
+    public string Title { get; set; } = null!;
 
-    public string Description { get; private set; } = null!;
+    public string Description { get; set; } = null!;
 
     public TimeSpan Duration { get; private set; }
 

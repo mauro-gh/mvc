@@ -21,6 +21,8 @@ namespace mvc.Models.Services.Application
         private readonly IDatabaseAccessor db;
         private readonly IOptionsMonitor<CoursesOptions> coursesOptions;
 
+        public string Version => throw new NotImplementedException();
+
         public AdoNetCourseService(
             ILogger<AdoNetCourseService> logger,    // log con sua categoria
             IDatabaseAccessor db, // nostra interfaccia per implementare metodo QueryAsync
@@ -196,8 +198,39 @@ namespace mvc.Models.Services.Application
 
         }
 
-        public string Version => throw new NotImplementedException();
+        public async Task<CourseDetailViewModel> CreateCourseAsync(CourseCreateInputModel inputModel)
+        {
+            string title = inputModel.Title;
+            string author = "Pippo Pelo";
 
+            DataSet ds = await db.QueryAsync(@$"
+                    INSERT INTO Courses (
+                        Title,
+                        Description,
+                        Author, 
+                        LogoPath, 
+                        CurrentPrice_Currency,
+                        CurrentPrice_Amount, 
+                        FullPrice_Currency,
+                        FullPrice_Amount)
+                    VALUES(
+                        {title},
+                        {title},
+                        {author},
+                        '/Courses/default.png',
+                        'EUR',
+                        0,
+                        'EUR',
+                        0);
 
+                    SELECT last_insert_rowid() as Id;
+            ");
+
+            int courseId = Convert.ToInt32(ds.Tables[0].Rows[0]["Id"]);
+            CourseDetailViewModel course = await GetCourseAsync(courseId);
+
+            return course;
+            
+        }
     }
 }

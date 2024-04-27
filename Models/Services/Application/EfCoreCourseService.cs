@@ -229,6 +229,38 @@ namespace mvc.Models.Services.Application
                 return result.Results;
         }
 
+        public async Task<CourseDetailViewModel> CreateCourseAsync(CourseCreateInputModel inputModel)
+        {
+            // qui fara' tutto il dbcontext (add, update, remove...)
+            // i dati non vengono salvati subito, ma parcheggiata nel change tracker(added),
+            // e solo nel SaveChanges viene salvato (lo stato diventa unchanged)
+            // Per conoscere lo stato:
+            // dbContext.Entry(course).State = EntityState.Added
+
+            string title = inputModel.Title;
+            string author = "Pippo Pelo EF" ;
+
+            // nuova istanza
+            var course = new Course(title, author);
+
+            var lesson01 = new Lesson()
+            {Title="Lezione EF 01", Description="Descrizione lezione 01"};
+            var lesson02 = new Lesson()
+            {Title="Lezione EF 02", Description="Descrizione lezione 02"};
+            course.Lessons.Add(lesson01);
+            course.Lessons.Add(lesson02);
+
+
+            // la affidiamo al dbcontext
+            dbContext.Add(course);
+
+
+            await dbContext.SaveChangesAsync();
+            // detached -> added -> unchanged
+
+            return CourseDetailViewModel.FromEntity(course);
+
+        }
     }
 }
 

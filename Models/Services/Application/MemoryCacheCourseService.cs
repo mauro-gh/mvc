@@ -89,6 +89,12 @@ namespace mvc.Models.Services.Application
             return task;
         }
 
+        public Task<CourseDetailViewModel> CreateCourseAsync(CourseCreateInputModel inputModel)
+        {
+            // non si usa la cache negli inserimenti!
+            return courseService.CreateCourseAsync(inputModel);
+        }
+
         public string Version => "1.0";
         
     }

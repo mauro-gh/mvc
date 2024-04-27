@@ -49,7 +49,7 @@ public partial class MyCourseDbContext : DbContext
 
 
             #region generato automaticamente
-            /*
+
             entity.Property(e => e.Author).HasColumnType("Text (100)");
             entity.Property(e => e.CurrentPriceAmount)
                 .HasColumnType("NUMERIC")
@@ -69,7 +69,7 @@ public partial class MyCourseDbContext : DbContext
                 .HasColumnName("FullPrice_Currency");
             entity.Property(e => e.LogoPath).HasColumnType("Text (100)");
             entity.Property(e => e.Title).HasColumnType("Text (100)");
-            */
+
             #endregion
 
         });
@@ -79,12 +79,12 @@ public partial class MyCourseDbContext : DbContext
         {
 
             // mapping per le relazioni, la lezione vede un solo corso
-            //entity.HasOne(lesson => lesson.Course)
-            //.WithMany(course => course.Lessons);
+            entity.HasOne(lesson => lesson.Course)
+            .WithMany(course => course.Lessons);
 
 
             #region generato automaticamente
-            /*
+            
             entity.Property(e => e.Description).HasColumnType("TEXT (10000)");
             entity.Property(e => e.Duration)
                 .HasDefaultValueSql("'00:00:00'")
@@ -93,8 +93,8 @@ public partial class MyCourseDbContext : DbContext
 
             entity.HasOne(d => d.Course).WithMany(p => p.Lessons).HasForeignKey(d => d.CourseId);
             #endregion
-            */
-            #endregion
+            
+            
         });
 
         OnModelCreatingPartial(modelBuilder);

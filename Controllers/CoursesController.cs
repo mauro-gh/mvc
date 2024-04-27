@@ -84,11 +84,36 @@ namespace mvc.Controllers
             return View(viewModel);
         }
 
+        // questa action ha l'unica responsabilita' di visualizzare una view vuota, e' in get
+        // non serve sia async, non legge da DB
+        [HttpGet]
+        public IActionResult Create()
+        {
+            ViewData["Title"] = "Inserimento nuovo corso";
+            // model binding (da form a entita)
+            var inputModel = new CourseCreateInputModel();
+            return View(inputModel);
+        }
+
+
+        // questa invece e' quella che riceve i valori del form di nuovo corso, e' in post
+        [HttpPost]
+        public async Task<IActionResult> Create([FromForm]CourseCreateInputModel inputModel){
+            // utilizzare il servizio applicativo per salvare il corso
+            CourseDetailViewModel course = await cs.CreateCourseAsync(inputModel);
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        #region errors
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View("Error!");
         }
+
+        #endregion
     }
 
 
