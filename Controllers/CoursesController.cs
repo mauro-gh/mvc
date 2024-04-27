@@ -127,7 +127,7 @@ namespace mvc.Controllers
         public async Task<IActionResult> IsTitleAvailable(string title)
         {
             bool disponibile = await cs.IsTitleAvailableAsync(title);
-            // serve per ajax, validazione di tipo Remote
+            // serve per ajax, validazione di tipo Remote, deve restiture un json booleano
             return Json(disponibile);
 
         }
