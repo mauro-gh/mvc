@@ -271,6 +271,16 @@ namespace mvc.Models.Services.Application
             return CourseDetailViewModel.FromEntity(course);
 
         }
+
+        public async Task<bool> IsTitleAvailableAsync(string title)
+        {
+            
+            
+            bool titoloesistente = await dbContext.Courses.AnyAsync(course => EF.Functions.Like(course.Title, title));
+            return !titoloesistente;
+
+
+        }        
     }
 }
 

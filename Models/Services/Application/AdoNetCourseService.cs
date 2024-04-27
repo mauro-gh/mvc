@@ -241,5 +241,15 @@ namespace mvc.Models.Services.Application
             } 
             
         }
+
+        public async Task<bool> IsTitleAvailableAsync(string title)
+        {
+            DataSet result = await db.QueryAsync(@$"SELECT COUNT(*) as Conteggio FROM Courses WHERE Title LIKE {title}");
+            
+            bool disponibile = ((Int64) result.Tables[0].Rows[0]["Conteggio"]) == 0 ? true : false;
+            return disponibile;
+
+
+        }
     }
 }
