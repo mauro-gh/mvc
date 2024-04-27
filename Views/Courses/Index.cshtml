@@ -26,11 +26,11 @@
 </div>
 
 @foreach (CourseViewModel course in Model.Courses.Results)
-    {
-    <hr>
-    <partial name="Courses/_CourseLine" model="course"></partial>
-    }
+{
+<hr>
+<partial name="Courses/_CourseLine" model="course"></partial>
 }
+
 
 <!-- calcolo pagine: spostato nel viewcomponent -->
 <vc:pagination-bar model="@Model"></vc:pagination-bar>

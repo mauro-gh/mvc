@@ -45,7 +45,7 @@ namespace mvc.Models.Services.Application
             // prima lo cerca in cache, se non lo trova lo cerca dal DB
             // e lo associa SEMPRE alla stessa chiave Courses, quindi in caso di
             // search valorizzato non restituisce i valori aggiornati
-            Task<ListViewModel<CourseViewModel>?> task = memoryCache.GetOrCreateAsync($"Courses{model.Page}-{model.OrderBy}-{model.Ascending}", cacheEntry =>
+            Task<ListViewModel<CourseViewModel>?> task = memoryCache.GetOrCreateAsync($"Courses{model.Page}-{model.OrderBy}-{model.Ascending}-{model.Search}", cacheEntry =>
             {
                 cacheEntry.SetSize(100);
                 cacheEntry.SetAbsoluteExpiration(time60sec);

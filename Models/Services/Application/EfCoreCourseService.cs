@@ -157,7 +157,7 @@ namespace mvc.Models.Services.Application
 
             // separare query ed esecuzione
             IQueryable<CourseViewModel> queryLinq = baseQuery
-            .Where(course => course.Title.Contains(model.Search))  // clausola WHERE
+            .Where(course => course.Title.ToUpper().Contains(model.Search.ToUpper()))  // clausola WHERE
             //.AsNoTracking()     // non traccia le modifiche
             .Select(course =>
                 new CourseViewModel     // sostituibile con CourseViewModel.FromEntity(course)
