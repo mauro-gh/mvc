@@ -90,7 +90,7 @@ namespace mvc.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            ViewData["Title"] = "Inserimento nuovo corso";
+            ViewData["Title"] = "Inserimento nuovo corso (GET)";
             // model binding (da form a entita)
             var inputModel = new CourseCreateInputModel();
             return View(inputModel);
@@ -118,7 +118,7 @@ namespace mvc.Controllers
                 }
             }
 
-            ViewData["Title"] = "Inserimento nuovo corso";
+            ViewData["Title"] = "Inserimento nuovo corso (POST)";
             // restituiamo all'utente il suo input non valido
             return View(inputModel);    
 
@@ -131,6 +131,43 @@ namespace mvc.Controllers
             return Json(disponibile);
 
         }
+
+        // questa action ha la responsabilita' di modificare un corso, in GET vieno solo mostrata la view
+        [HttpGet]
+        public  async Task<IActionResult> Edit(int id)
+        {
+            ViewData["Title"] = $"Modifica corso {id} (GET)";
+            // model binding, ci facciamo restituire dal S.A. un'istanza gia' popolata
+            CourseEditInputModel inputModel = await cs.GetCourseForEditingAsync(id);
+            // view fortemente tipizzata
+            return View(inputModel);
+        }        
+
+        // e in POST viene gestito l'input dell'utente, grazie al model binding
+        [HttpPost]
+        public  async Task<IActionResult> Edit([FromForm]CourseEditInputModel inputModel)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    // TUTTO OK
+                    // utilizzare il servizio applicativo per salvare il corso
+                    CourseDetailViewModel course = await cs.SaveCourseAsync(inputModel);
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    // DUPLICATO, aggiungiamo errore
+                    ModelState.AddModelError("Title", ex.Message);                     
+                }
+            }
+
+            ViewData["Title"] = $"Modifica corso (POST)";
+            // restituiamo all'utente il suo input non valido
+            return View(inputModel);    
+        }  
+
 
 
         #region errors

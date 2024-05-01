@@ -20,6 +20,8 @@ namespace mvc.Models.Services.Application
         Task<List<CourseViewModel>> GetMostRecentCoursesAsync();
         Task<CourseDetailViewModel> CreateCourseAsync(CourseCreateInputModel inputModel);
         Task<bool> IsTitleAvailableAsync(string title);
+        Task<CourseEditInputModel> GetCourseForEditingAsync(int id);
+        Task<CourseDetailViewModel> SaveCourseAsync(CourseEditInputModel inputModel);
 
         public string Version { get; }
 

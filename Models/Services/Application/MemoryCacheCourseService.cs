@@ -100,6 +100,16 @@ namespace mvc.Models.Services.Application
             return courseService.IsTitleAvailableAsync(title);
         }
 
+        public Task<CourseEditInputModel> GetCourseForEditingAsync(int id)
+        {
+            return courseService.GetCourseForEditingAsync(id);
+        }
+
+        public Task<CourseDetailViewModel> SaveCourseAsync(CourseEditInputModel inputModel)
+        {
+            return courseService.SaveCourseAsync(inputModel);
+        }
+
         public string Version => "1.0";
         
     }

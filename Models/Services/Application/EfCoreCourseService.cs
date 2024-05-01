@@ -280,7 +280,58 @@ namespace mvc.Models.Services.Application
             return !titoloesistente;
 
 
-        }        
+        }
+
+        public async Task<CourseEditInputModel> GetCourseForEditingAsync(int id)
+        {
+            IQueryable<CourseEditInputModel> queryLinq = dbContext.Courses
+                .AsNoTracking()
+                .Where(course => course.Id == id)
+                .Select(course => CourseEditInputModel.FromEntity(course)); //Usando metodi statici come FromEntity, la query potrebbe essere inefficiente. Mantenere il mapping nella lambda oppure usare un extension method personalizzato
+
+            CourseEditInputModel viewModel = await queryLinq.FirstOrDefaultAsync();
+
+            if (viewModel == null)
+            {
+                //logger.LogWarning("Course {id} not found", id);
+                throw new CourseNotFoundException(id);
+            }
+
+            return viewModel;
+        }
+
+        public async Task<CourseDetailViewModel> SaveCourseAsync(CourseEditInputModel inputModel)
+        {
+            Course c = await dbContext.Courses.FindAsync(inputModel.Id);
+
+            if (c != null)
+            {
+                c.ChangeTitle(inputModel.Title);
+                c.ChangePrices(inputModel.FullPrice, inputModel.CurrentPrice);
+                c.ChangeDescription(inputModel.Description);
+                c.ChangeEmail(inputModel.Email);
+
+                try
+                {
+                    await dbContext.SaveChangesAsync();
+                }
+                catch (DbUpdateException exc)
+                {
+                    
+                    throw new CourseTitleDuplicateException(inputModel.Title, exc);
+                }
+
+                return CourseDetailViewModel.FromEntity(c);
+
+            }
+            else
+            {
+                throw new Exception("Corso non trovato");
+            }
+
+
+
+        }
     }
 }
 

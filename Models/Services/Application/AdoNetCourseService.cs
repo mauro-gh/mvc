@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -250,6 +251,51 @@ namespace mvc.Models.Services.Application
             return disponibile;
 
 
+        }
+
+    public async Task<CourseEditInputModel> GetCourseForEditingAsync(int id)
+    {
+        FormattableString query = $@"SELECT Id, Title, Description, ImagePath, Email, FullPrice_Amount, FullPrice_Currency, CurrentPrice_Amount, CurrentPrice_Currency, RowVersion FROM Courses WHERE Id={id}";
+
+        DataSet dataSet = await db.QueryAsync(query);
+
+        DataTable courseTable = dataSet.Tables[0];
+        if (courseTable.Rows.Count != 1)
+        {
+            logger.LogWarning("Course {id} not found", id);
+            throw new CourseNotFoundException(id);
+        }
+        DataRow courseRow = courseTable.Rows[0];
+        CourseEditInputModel courseEditInputModel = CourseEditInputModel.FromDataRow(courseRow);
+        return courseEditInputModel;
+    }
+
+        public async Task<CourseDetailViewModel> SaveCourseAsync(CourseEditInputModel i)
+        {
+           try
+            {
+                // Salvataggio corso
+                DataSet ds = await db.QueryAsync(@$"
+                        UPDATE Courses SET 
+                           Title = {i.Title},
+                           Description = {i.Description},
+                           Email = {i.Email},
+                           CurrentPrice_Currency = {i.CurrentPrice.Currency},
+                           CurrentPrice_Amount = {i.CurrentPrice.Amount},
+                           FullPrice_Currency = {i.FullPrice.Currency},
+                           FullPrice_Amount = {i.FullPrice.Amount}
+                        WHERE
+                           Id={i.Id}");
+
+                // Rilettura corso da DB
+                CourseDetailViewModel course = await GetCourseAsync(i.Id);
+                return course;                
+            }
+            catch (Exception exc)
+            {
+                throw new CourseTitleDuplicateException(i.Title, exc);
+
+            }             
         }
     }
 }
