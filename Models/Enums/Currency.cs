@@ -1,4 +1,4 @@
-namespace MyCourse.Models.Enums;
+namespace mvc.Models.Enums;
 
 public enum Currency
 {

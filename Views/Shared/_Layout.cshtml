@@ -29,10 +29,15 @@
                 </ul>
             </div>
         </nav>
-
     </header>
 
     <div class="container">
+        @if (TempData["MessaggioDiConferma"] != null)
+        {
+            <div class="alert alert-success alert-dismissible mt-3" role="alert"> 
+                @TempData["MessaggioDiConferma"]
+            </div>
+        }
         @RenderBody()
     </div>
 

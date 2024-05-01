@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using MyCourse.Models.Enums;
-using MyCourse.Models.ValueObjects;
+using mvc.Models.Enums;
+using mvc.Models.ValueObjects;
 
 namespace mvc.Models.Entities;
 

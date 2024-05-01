@@ -95,9 +95,9 @@ namespace mvc.Models.Services.Application
             return courseService.CreateCourseAsync(inputModel);
         }
 
-        public Task<bool> IsTitleAvailableAsync(string title)
+        public Task<bool> IsTitleAvailableAsync(string title, int id)
         {
-            return courseService.IsTitleAvailableAsync(title);
+            return courseService.IsTitleAvailableAsync(title, id);
         }
 
         public Task<CourseEditInputModel> GetCourseForEditingAsync(int id)
@@ -105,9 +105,23 @@ namespace mvc.Models.Services.Application
             return courseService.GetCourseForEditingAsync(id);
         }
 
-        public Task<CourseDetailViewModel> SaveCourseAsync(CourseEditInputModel inputModel)
+        public async Task<CourseDetailViewModel> SaveCourseAsync(CourseEditInputModel inputModel)
         {
-            return courseService.SaveCourseAsync(inputModel);
+
+            // Utilizzare memoryCache.Remove($"Course{id}") quando si aggiorna corso su DB
+            
+            //return courseService.SaveCourseAsync(inputModel);
+
+            // aspettiamo il salvataggio
+            // invalidiamo la cache
+            // lo restituiamo            
+
+            CourseDetailViewModel viewModel = await courseService.SaveCourseAsync(inputModel);
+            memoryCache.Remove($"Course{inputModel.Id}") ;
+            return viewModel;
+
+
+
         }
 
         public string Version => "1.0";

@@ -272,11 +272,11 @@ namespace mvc.Models.Services.Application
 
         }
 
-        public async Task<bool> IsTitleAvailableAsync(string title)
+        public async Task<bool> IsTitleAvailableAsync(string title, int id)
         {
             
             
-            bool titoloesistente = await dbContext.Courses.AnyAsync(course => EF.Functions.Like(course.Title, title));
+            bool titoloesistente = await dbContext.Courses.AnyAsync(course => EF.Functions.Like(course.Title, title) && course.Id != id);
             return !titoloesistente;
 
 

@@ -1,6 +1,6 @@
-using MyCourse.Models.Enums;
+using mvc.Models.Enums;
 
-namespace MyCourse.Models.ValueObjects;
+namespace mvc.Models.ValueObjects;
 
 public record Money
 {

@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using mvc.Controllers;
 using mvc.Models.Entities;
-using MyCourse.Models.Enums;
-using MyCourse.Models.ValueObjects;
+using mvc.Models.Enums;
+using mvc.Models.ValueObjects;
 
 namespace mvc.Models.InputModels
 {
@@ -24,7 +24,7 @@ namespace mvc.Models.InputModels
         MinLength(10, ErrorMessage = "Il titolo dev'essere di almeno {1} caratteri"),
         MaxLength(100, ErrorMessage = "Il titolo dev'essere di al massimo {1} caratteri"),
         RegularExpression(@"^[0-9A-z\u00C0-\u00ff\s\.']+$", ErrorMessage = "Titolo non valido"), //Questa espressione regolare include anche i caratteri accentati
-        Remote(action: nameof(CoursesController.IsTitleAvailable), controller: "Courses", ErrorMessage = "Il titolo esiste già", AdditionalFields = "Id"),
+        Remote(action: nameof(CoursesController.IsTitleAvailable), controller: "Courses", ErrorMessage = "Il titolo esiste già (ajax)", AdditionalFields = "Id"),
         Display(Name = "Titolo")]
         public string Title { get; set; }
         
@@ -34,7 +34,7 @@ namespace mvc.Models.InputModels
         public string Description { get; set; }
 
         [Display(Name = "Immagine rappresentativa")]
-        public string ImagePath { get; set; }
+        public string LogoPath { get; set; }
 
         [Required(ErrorMessage = "L'email di contatto è obbligatoria"),
         EmailAddress(ErrorMessage = "Devi inserire un indirizzo email"),
@@ -69,7 +69,7 @@ namespace mvc.Models.InputModels
             {
                 Title = Convert.ToString(courseRow["Title"]),
                 Description = Convert.ToString(courseRow["Description"]),
-                ImagePath = Convert.ToString(courseRow["ImagePath"]),
+                LogoPath = Convert.ToString(courseRow["LogoPath"]),
                 Email = Convert.ToString(courseRow["Email"]),
                 FullPrice = new Money(
                     Enum.Parse<Currency>(Convert.ToString(courseRow["FullPrice_Currency"])),
@@ -82,6 +82,10 @@ namespace mvc.Models.InputModels
                 Id = Convert.ToInt32(courseRow["Id"])//,
                 //RowVersion = Convert.ToString(courseRow["RowVersion"])
             };
+            if (string.IsNullOrEmpty(courseEditInputModel.LogoPath))
+            {
+                courseEditInputModel.LogoPath = @"/Courses/default.png";
+            }
             return courseEditInputModel;
         }
 
@@ -93,7 +97,7 @@ namespace mvc.Models.InputModels
                 Title = course.Title,
                 Description = course.Description,
                 Email = course.Email,
-                ImagePath = course.LogoPath,
+                LogoPath = course.LogoPath,
                 CurrentPrice = course.CurrentPrice,
                 FullPrice = course.FullPrice//,
                 //RowVersion = course.RowVersion

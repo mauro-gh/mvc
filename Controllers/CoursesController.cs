@@ -109,7 +109,9 @@ namespace mvc.Controllers
                     // TUTTO OK
                     // utilizzare il servizio applicativo per salvare il corso
                     CourseDetailViewModel course = await cs.CreateCourseAsync(inputModel);
-                    return RedirectToAction(nameof(Index));
+                    TempData["MessaggioDiConferma"] = "Corso creato, ora compila gli altri campi!";
+                    //return RedirectToAction(nameof(Index));
+                    return RedirectToAction(nameof(Edit), new {id = course.Id}); // verra' passato al routing per comporre la pag detail/19
                 }
                 catch (CourseTitleDuplicateException ex)
                 {
@@ -124,9 +126,9 @@ namespace mvc.Controllers
 
         }
 
-        public async Task<IActionResult> IsTitleAvailable(string title)
+        public async Task<IActionResult> IsTitleAvailable(string title, int id=0)
         {
-            bool disponibile = await cs.IsTitleAvailableAsync(title);
+            bool disponibile = await cs.IsTitleAvailableAsync(title, id);
             // serve per ajax, validazione di tipo Remote, deve restiture un json booleano
             return Json(disponibile);
 
@@ -145,7 +147,7 @@ namespace mvc.Controllers
 
         // e in POST viene gestito l'input dell'utente, grazie al model binding
         [HttpPost]
-        public  async Task<IActionResult> Edit([FromForm]CourseEditInputModel inputModel)
+        public  async Task<IActionResult> Edit(CourseEditInputModel inputModel)
         {
             if (ModelState.IsValid)
             {
@@ -154,7 +156,8 @@ namespace mvc.Controllers
                     // TUTTO OK
                     // utilizzare il servizio applicativo per salvare il corso
                     CourseDetailViewModel course = await cs.SaveCourseAsync(inputModel);
-                    return RedirectToAction(nameof(Index));
+                    TempData["MessaggioDiConferma"] = "Dati salvati su DB";
+                    return RedirectToAction(nameof(Detail), new {id = inputModel.Id}); // verra' passato al routing per comporre la pag detail/19
                 }
                 catch (Exception ex)
                 {

@@ -150,6 +150,12 @@ namespace mvc.Models.Services.Application
             foreach (DataRow dr in dtCorsi.Rows)
             {
                 CourseViewModel course = CourseViewModel.FromDataRow(dr);
+
+                if (string.IsNullOrEmpty(course.LogoPath))
+                    {
+                        course.LogoPath = @"/Courses/default.png";
+                    }
+
                 courseList.Add(course);
 
             }
@@ -243,9 +249,9 @@ namespace mvc.Models.Services.Application
             
         }
 
-        public async Task<bool> IsTitleAvailableAsync(string title)
+        public async Task<bool> IsTitleAvailableAsync(string title, int id)
         {
-            DataSet result = await db.QueryAsync(@$"SELECT COUNT(*) as Conteggio FROM Courses WHERE Title LIKE {title}");
+            DataSet result = await db.QueryAsync(@$"SELECT COUNT(*) as Conteggio FROM Courses WHERE Title LIKE {title} AND Id <> {id}");
             
             bool disponibile = ((Int64) result.Tables[0].Rows[0]["Conteggio"]) == 0 ? true : false;
             return disponibile;
@@ -255,7 +261,7 @@ namespace mvc.Models.Services.Application
 
     public async Task<CourseEditInputModel> GetCourseForEditingAsync(int id)
     {
-        FormattableString query = $@"SELECT Id, Title, Description, ImagePath, Email, FullPrice_Amount, FullPrice_Currency, CurrentPrice_Amount, CurrentPrice_Currency, RowVersion FROM Courses WHERE Id={id}";
+        FormattableString query = $@"SELECT Id, Title, Description, LogoPath, Email, FullPrice_Amount, FullPrice_Currency, CurrentPrice_Amount, CurrentPrice_Currency FROM Courses WHERE Id={id}";
 
         DataSet dataSet = await db.QueryAsync(query);
 
