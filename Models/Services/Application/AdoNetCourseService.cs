@@ -20,6 +20,7 @@ namespace mvc.Models.Services.Application
     {
         private readonly ILogger<AdoNetCourseService> logger;
         private readonly IDatabaseAccessor db;
+        private IImagePersister imagePersister;
         private readonly IOptionsMonitor<CoursesOptions> coursesOptions;
 
         public string Version => throw new NotImplementedException();
@@ -27,7 +28,8 @@ namespace mvc.Models.Services.Application
         public AdoNetCourseService(
             ILogger<AdoNetCourseService> logger,    // log con sua categoria
             IDatabaseAccessor db, // nostra interfaccia per implementare metodo QueryAsync
-            IOptionsMonitor<CoursesOptions> coursesOptions // sezione di configurazione nel appsetting
+            IOptionsMonitor<CoursesOptions> coursesOptions, // sezione di configurazione nel appsetting
+            IImagePersister imagePersister      // nostra interfaccia per persistere immagine
             )
         {
             this.coursesOptions = coursesOptions;
@@ -36,6 +38,7 @@ namespace mvc.Models.Services.Application
             long perpage = coursesOptions.CurrentValue.PerPage;
             this.logger = logger;
             this.db = db;
+            this.imagePersister = imagePersister;
         }
 
         public async Task<CourseDetailViewModel> GetCourseAsync(int id)
@@ -278,10 +281,28 @@ namespace mvc.Models.Services.Application
 
         public async Task<CourseDetailViewModel> SaveCourseAsync(CourseEditInputModel i)
         {
+
+            // Verifico se l'id del corso esiste su DB
+            DataSet ds = await db.QueryAsync(@$"
+                    SELECT COUNT(*)
+                      FROM Courses
+                    WHERE
+                        Id={i.Id}");            
+
+            int count = Convert.ToInt32( ds.Tables[0].Rows[0][0]);
+            if (count == 0)
+            {
+                throw new CourseNotFoundException(i.Id);
+            }
+
+
+
+
+
            try
             {
                 // Salvataggio corso
-                DataSet ds = await db.QueryAsync(@$"
+                ds = await db.QueryAsync(@$"
                         UPDATE Courses SET 
                            Title = {i.Title},
                            Description = {i.Description},
@@ -293,15 +314,30 @@ namespace mvc.Models.Services.Application
                         WHERE
                            Id={i.Id}");
 
-                // Rilettura corso da DB
-                CourseDetailViewModel course = await GetCourseAsync(i.Id);
-                return course;                
             }
             catch (Exception exc)
             {
                 throw new CourseTitleDuplicateException(i.Title, exc);
+            }
 
-            }             
+            if (i.Image != null)
+            {
+                string imagePath = await imagePersister.SaveCourseImageAsync(i.Id, i.Image);
+                 // Salvataggio immagine
+                ds = await db.QueryAsync(@$"
+                        UPDATE Courses SET 
+                           LogoPath = {imagePath}
+                        WHERE
+                           Id={i.Id}");
+               
+
+            }
+
+            // Rilettura corso da DB
+            CourseDetailViewModel course = await GetCourseAsync(i.Id);
+            return course;                
+
+
         }
     }
 }

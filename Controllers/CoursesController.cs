@@ -147,7 +147,7 @@ namespace mvc.Controllers
 
         // e in POST viene gestito l'input dell'utente, grazie al model binding
         [HttpPost]
-        public  async Task<IActionResult> Edit(CourseEditInputModel inputModel)
+        public  async Task<IActionResult> Edit([FromForm]CourseEditInputModel inputModel)
         {
             if (ModelState.IsValid)
             {

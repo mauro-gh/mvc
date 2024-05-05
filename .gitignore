@@ -2,3 +2,5 @@ obj
 bin
 *.sql
 wwwroot
+Views/Courses/Edit.cshtml.bak
+Models/InputModels/CourseEditInputModel.cs.bak

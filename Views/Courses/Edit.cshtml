@@ -1,24 +1,19 @@
 @model CourseEditInputModel
-
-
 <section class="course-info">
-    <form method="post">
-
-       <div class="row">
+    <form method="post" enctype="multipart/form-data">
+        <div class="row">
             <div class="col-md-9">
                 <h1>@ViewData["Title"]</h1>
             </div>
             <div class="col-md-3 d-flex align-items-center">
                 <button type="submit" class="btn btn-primary btn-lg btn-block">Salva</button>
-                <button class="btn btn-danger btn-lg ml-3" type="button"><i class="fas fa-trash"></i></button>
-            </div>            
-        </div>        
+                <button type="button" class="btn btn-danger btn-lg ml-3"><i class="fas fa-trash-alt"></i></button>
+            </div>
+        </div>
         <div class="row">
             <div class="col-12" asp-validation-summary="All"></div>
         </div>
-
-        <input type="text" asp-for="Id">
-
+        <input type="hidden" asp-for="Id">
         <div class="row">
             <div class="col-md-9">
                 <div class="form-group">
@@ -26,6 +21,7 @@
                     <input type="text" class="form-control form-control-lg" asp-for="Title">
                     <span asp-validation-for="Title"></span>
                 </div>
+
                 <div class="form-group">
                     <label asp-for="Description"></label>
                     <textarea asp-for="Description" class="form-control" rows="18"></textarea>
@@ -33,7 +29,7 @@
                 </div>
             </div>
             <div class="col-md-3">
-                <aside>                
+                <aside>
                     <div class="form-group">
                         <label asp-for="Email"></label>
                         <input type="email" asp-for="Email" class="form-control">
@@ -57,15 +53,33 @@
                     </div>
                     <div class="form-group">
                         <label asp-for="LogoPath"></label>
-                        <img src="@Model.LogoPath" class="img-fluid course-image" alt="@Model.Title" asp-append-version="true">
-                    </div>   
-                </aside>                                           
+                        <div class="preview-container">
+                            <input type="hidden" asp-for="LogoPath">
+                            <img id="preview" src="@Model.LogoPath" asp-append-version="true">
+                        </div>
+                        <div class="custom-file mt-3">
+                            <input type="file" class="custom-file-input" asp-for="Image" onchange="updatePreview(this)">
+                            <label class="custom-file-label" asp-for="Image"></label>
+                        </div>
+                    </div>
+                </aside>
             </div>
         </div>
     </form>
 </section>
-<i class="fa fa-500px" aria-hidden="true"></i>
 @section Scripts
 {
     <partial name="_Validation"></partial>
+    <partial name="_Tinymce"></partial>
+
+    <script>
+        function updatePreview(inputFile) {
+            var reader = new FileReader();
+            reader.onload = function (e) {
+                $('#preview').attr('src', e.target.result);
+            };
+            reader.readAsDataURL(inputFile.files[0]);
+        }
+
+    </script>
 }

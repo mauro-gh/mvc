@@ -54,6 +54,9 @@ internal class Program
         builder.Services.AddTransient<IDatabaseAccessor, SqliteDatabaseAccessor>();
         // per la cache
         builder.Services.AddTransient<ICachedCourseService, MemoryCacheCourseService>();
+        // per persistre immagini
+        builder.Services.AddSingleton<IImagePersister, InsecureImagePersister>();
+        
 
         // Options
         builder.Services.Configure<ConnectionStringsOptions>(startup.Config.GetSection("ConnectionStrings"));

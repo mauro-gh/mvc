@@ -49,6 +49,9 @@ namespace mvc.Models.InputModels
         Display(Name = "Prezzo corrente")]
         public Money CurrentPrice {get;set; }
 
+        [Display(Name = "Nuova immagine...")]
+        public IFormFile Image {get;set;}
+
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
             // validazione valuta
@@ -65,7 +68,7 @@ namespace mvc.Models.InputModels
 
         public static CourseEditInputModel FromDataRow(DataRow courseRow)
         {
-            CourseEditInputModel courseEditInputModel = new()
+            var courseEditInputModel = new CourseEditInputModel
             {
                 Title = Convert.ToString(courseRow["Title"]),
                 Description = Convert.ToString(courseRow["Description"]),
@@ -82,10 +85,10 @@ namespace mvc.Models.InputModels
                 Id = Convert.ToInt32(courseRow["Id"])//,
                 //RowVersion = Convert.ToString(courseRow["RowVersion"])
             };
-            if (string.IsNullOrEmpty(courseEditInputModel.LogoPath))
-            {
-                courseEditInputModel.LogoPath = @"/Courses/default.png";
-            }
+            // if (string.IsNullOrEmpty(courseEditInputModel.LogoPath))
+            // {
+            //     courseEditInputModel.LogoPath = @"/Courses/default.png";
+            // }
             return courseEditInputModel;
         }
 

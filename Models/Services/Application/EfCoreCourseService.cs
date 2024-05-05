@@ -311,6 +311,9 @@ namespace mvc.Models.Services.Application
                 c.ChangeDescription(inputModel.Description);
                 c.ChangeEmail(inputModel.Email);
 
+                //TODO: aggiungere imagepersister e changeimagepath per salvare immagine
+
+
                 try
                 {
                     await dbContext.SaveChangesAsync();
