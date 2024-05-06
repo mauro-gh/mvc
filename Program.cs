@@ -52,10 +52,13 @@ internal class Program
         // Ogni volta che un componente ha una dipendenza da questa interfaccia,
         // net core initierra' un'istanza di SqliteDatabaseAccessor
         builder.Services.AddTransient<IDatabaseAccessor, SqliteDatabaseAccessor>();
+        //builder.Services.AddTransient<IDatabaseAccessor, SqlServerDatabaseAccessor>();
+        //builder.Services.AddTransient<IDatabaseAccessor, OracleDatabaseAccessor>();
+        
         // per la cache
         builder.Services.AddTransient<ICachedCourseService, MemoryCacheCourseService>();
         // per persistre immagini
-        builder.Services.AddSingleton<IImagePersister, InsecureImagePersister>();
+        builder.Services.AddSingleton<IImagePersister, MagickNetImagePersister>();
         
 
         // Options
