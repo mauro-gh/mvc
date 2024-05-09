@@ -61,7 +61,7 @@ internal class Program
         builder.Services.AddSingleton<IImagePersister, MagickNetImagePersister>();
         
 
-        // Options
+        // Options (verra' iniettato dalla DI tramite IOptionsMonitor<ConnectionStringsOptions> connectionStringsOptions))
         builder.Services.Configure<ConnectionStringsOptions>(startup.Config.GetSection("ConnectionStrings"));
         // da ora in poi, basta implementare interfaccia con IOptionsMonitor<CoursesOptions> e otteniamo tutta la sezione "Courses"
         builder.Services.Configure<CoursesOptions>(startup.Config.GetSection("Courses")); 

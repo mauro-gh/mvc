@@ -24,15 +24,89 @@ namespace mvc.Models.Services.Infrastructure
             this.connectionStringsOptions = connectionStringsOptions;
         }
 
+
+        /// <summary>
+        /// Per eseguire una query che restituisce un dataset (select)
+        /// </summary>
+        /// <param name="fquery"></param>
+        /// <returns></returns>
         public async Task<DataSet> QueryAsync(FormattableString fquery)
         {
 
             // log strutturato
             logger.LogInformation(fquery.Format, fquery.GetArguments());
 
+            string connectionString = connectionStringsOptions.CurrentValue.Default;
 
             // la using automaticamente implementa la dispose sia in caso di errori che non
-            
+            using SqliteConnection conn = await GetOpenConnection(connectionString);
+            using SqliteCommand cmd = GetCommand(fquery, conn);
+
+            using (var reader = await cmd.ExecuteReaderAsync())
+            {
+                DataSet ds = new DataSet();
+                var i = 0;
+
+                // Il reader puo' contenere piu' datatable, quindi inserisco in un ciclo
+                do
+                {
+                    i++;
+                    DataTable dt = new DataTable($"Tabella {i}");
+                    ds.Tables.Add(dt);
+                    dt.Load(reader);
+                    //logger.LogInformation("Rows:{0}", dt.Rows.Count);                           
+                } while (!reader.IsClosed);
+
+
+                return ds;
+            }
+
+
+        }
+
+ 
+        /// <summary>
+        /// per eseguire un comando che restituisce il numero di righe interessate (update)
+        /// </summary>
+        /// <param name="fCommand"></param>
+        /// <returns></returns>
+        public async Task<int> CommandAsync(FormattableString fCommand)
+        {
+
+            // TODO: aggiungere try catch con sqlitexception
+
+            string connectionString = connectionStringsOptions.CurrentValue.Default;
+
+            using SqliteConnection conn = await GetOpenConnection(connectionString);
+            using SqliteCommand cmd = GetCommand(fCommand, conn);
+
+            int rows = await cmd.ExecuteNonQueryAsync();
+            return rows;
+
+
+        }
+
+        /// <summary>
+        /// per eseguire una query che restituisce un valore scalare di tipo T
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="fQuery"></param>
+        /// <returns></returns>
+        public async Task<T> QueryScalarAsync<T>(FormattableString fQuery)
+        {
+            string connectionString = connectionStringsOptions.CurrentValue.Default;
+
+            using SqliteConnection conn = await GetOpenConnection(connectionString);
+            using SqliteCommand cmd = GetCommand(fQuery, conn);
+
+            object result = await cmd.ExecuteScalarAsync();
+            return (T) Convert.ChangeType(result, typeof(T));
+
+        }
+
+       private static SqliteCommand GetCommand(FormattableString fquery, SqliteConnection conn)
+        {
+
             // Creiamo dei SqliteParameter a partire dalla FormattableString
             var queryArguments = fquery.GetArguments(); // es trova 2 argomenti [0]=5 e [1]=5
             var sqliteParameters = new List<SqliteParameter>();
@@ -43,43 +117,26 @@ namespace mvc.Models.Services.Infrastructure
                 {
                     continue;
                 }
-                var parameter = new SqliteParameter(i.ToString(), queryArguments[i]);
+                var parameter = new SqliteParameter(i.ToString(), queryArguments[i] ?? DBNull.Value);
                 sqliteParameters.Add(parameter);
                 queryArguments[i] = "@" + i; // l'argomento diventa es @0 @1
             }
             string query = fquery.ToString(); // ora la stringa ha parametri accettabili da sqlite (@0 e @1)
 
-            string connectionString = connectionStringsOptions.CurrentValue.Default;
+            SqliteCommand cmd = new SqliteCommand(query, conn);
 
-
-            using (var conn  = new SqliteConnection(connectionString))
-            {
-                //conn.Open();
-                await conn.OpenAsync();
-
-                using (var cmd = new SqliteCommand(query, conn))
-                {
-                    cmd.Parameters.AddRange(sqliteParameters); // aggiunge i 2 parametri
-                    using (var reader = await cmd.ExecuteReaderAsync())
-                    {
-                        DataSet ds = new DataSet();
-                        var i = 0;
-
-                        // Il reader puo' contenere piu' datatable, quindi inserisco in un ciclo
-                        do
-                        {
-                            i++;
-                            DataTable dt = new DataTable($"Tabella {i}");
-                            ds.Tables.Add(dt);
-                            dt.Load(reader); 
-                            //logger.LogInformation("Rows:{0}", dt.Rows.Count);                           
-                        } while (!reader.IsClosed);
-
-
-                        return ds;
-                    }
-                }
-            }
+            cmd.Parameters.AddRange(sqliteParameters); // aggiunge i 2 parametri
+            return cmd;
         }
+
+        private async  Task<SqliteConnection> GetOpenConnection(string connectionString)
+        {
+            var conn = new SqliteConnection(connectionString);
+            //conn.Open();
+            await conn.OpenAsync();
+            return conn;
+        }        
+
+
     }
 }

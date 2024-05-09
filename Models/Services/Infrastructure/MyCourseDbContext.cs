@@ -31,7 +31,19 @@ public partial class MyCourseDbContext : DbContext
             entity.HasKey(course => course.Id); // pk
 
             // mapping per owned types (Money)
-            // TODO
+            entity.OwnsOne(course => course.CurrentPrice, builder => {
+                builder.Property(money => money.Currency)
+                .HasConversion<string>()
+                .HasColumnName("CurrentPrice_Currency"); //Superfluo perché le nostre colonne seguono già la convenzione di nomi
+                builder.Property(money => money.Amount).HasColumnName("CurrentPrice_Amount").HasConversion<float>(); //Superfluo perché le nostre colonne seguono già la convenzione di nomi
+            });
+
+            entity.OwnsOne(course => course.FullPrice, builder => {
+                builder.Property(money => money.Currency)
+                .HasConversion<string>()
+                .HasColumnName("FullPrice_Currency");
+                builder.Property(money => money.Amount).HasColumnName("FullPrice_Amount").HasConversion<float>();
+            });            
 
             // mapping per le relazioni, il corso vede N lezioni
             entity.HasMany(course => course.Lessons)
@@ -50,25 +62,25 @@ public partial class MyCourseDbContext : DbContext
 
             #region generato automaticamente
 
-            entity.Property(e => e.Author).HasColumnType("Text (100)");
-            entity.Property(e => e.CurrentPriceAmount)
-                .HasColumnType("NUMERIC")
-                .HasColumnName("CurrentPrice_Amount");
+            // entity.Property(e => e.Author).HasColumnType("Text (100)");
+            // entity.Property(e => e.CurrentPriceAmount)
+            //     .HasColumnType("NUMERIC")
+            //     .HasColumnName("CurrentPrice_Amount");
             entity.Property(e => e.CurrentPriceCurrency)
                 .HasDefaultValue("EUR")
                 .HasColumnType("TEXT(3)")
                 .HasColumnName("CurrentPrice_Currency");
-            entity.Property(e => e.Description).HasColumnType("Text (10000)");
-            entity.Property(e => e.Email).HasColumnType("Text(100)");
-            entity.Property(e => e.FullPriceAmount)
-                .HasColumnType("NUMERIC")
-                .HasColumnName("FullPrice_Amount");
+            // entity.Property(e => e.Description).HasColumnType("Text (10000)");
+            // entity.Property(e => e.Email).HasColumnType("Text(100)");
+            // entity.Property(e => e.FullPriceAmount)
+            //     .HasColumnType("NUMERIC")
+            //     .HasColumnName("FullPrice_Amount");
             entity.Property(e => e.FullPriceCurrency)
                 .HasDefaultValue("EUR")
                 .HasColumnType("TEXT(3)")
                 .HasColumnName("FullPrice_Currency");
-            entity.Property(e => e.LogoPath).HasColumnType("Text (100)");
-            entity.Property(e => e.Title).HasColumnType("Text (100)");
+            // entity.Property(e => e.LogoPath).HasColumnType("Text (100)");
+            // entity.Property(e => e.Title).HasColumnType("Text (100)");
 
             #endregion
 
@@ -79,20 +91,20 @@ public partial class MyCourseDbContext : DbContext
         {
 
             // mapping per le relazioni, la lezione vede un solo corso
-            entity.HasOne(lesson => lesson.Course)
-            .WithMany(course => course.Lessons);
+            // entity.HasOne(lesson => lesson.Course)
+            // .WithMany(course => course.Lessons);
 
 
-            #region generato automaticamente
+            // #region generato automaticamente
             
-            entity.Property(e => e.Description).HasColumnType("TEXT (10000)");
-            entity.Property(e => e.Duration)
-                .HasDefaultValueSql("'00:00:00'")
-                .HasColumnType("TEXT (8)");
-            entity.Property(e => e.Title).HasColumnType("TEXT (100)");
+            // entity.Property(e => e.Description).HasColumnType("TEXT (10000)");
+            // entity.Property(e => e.Duration)
+            //     .HasDefaultValueSql("'00:00:00'")
+            //     .HasColumnType("TEXT (8)");
+            // entity.Property(e => e.Title).HasColumnType("TEXT (100)");
 
-            entity.HasOne(d => d.Course).WithMany(p => p.Lessons).HasForeignKey(d => d.CourseId);
-            #endregion
+            // entity.HasOne(d => d.Course).WithMany(p => p.Lessons).HasForeignKey(d => d.CourseId);
+            // #endregion
             
             
         });

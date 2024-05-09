@@ -48,8 +48,8 @@ namespace mvc.Models.Services.Application
             logger.LogInformation("Couses {id} requested", id);
 
 
-            FormattableString query = $@"SELECT * FROM Courses WHERE Id = {id};
-                SELECT * FROM Lessons where CourseId = {id}" ;
+            FormattableString query = $@"SELECT Id, Title, Description, LogoPath, Author, Rating, FullPrice_Amount, FullPrice_Currency, CurrentPrice_Amount, CurrentPrice_Currency FROM Courses WHERE Id = {id};
+                SELECT Id, Title, Description, Duration FROM Lessons where CourseId = {id}" ;
 
 
 
@@ -215,7 +215,7 @@ namespace mvc.Models.Services.Application
 
             try
             {
-                DataSet ds = await db.QueryAsync(@$"
+                int courseId = await db.QueryScalarAsync<int>(@$"
                         INSERT INTO Courses (
                             Title,
                             Description,
@@ -238,7 +238,7 @@ namespace mvc.Models.Services.Application
                         SELECT last_insert_rowid() as Id;
                 ");
 
-                int courseId = Convert.ToInt32(ds.Tables[0].Rows[0]["Id"]);
+                //int courseId = Convert.ToInt32(ds.Tables[0].Rows[0]["Id"]);
                 CourseDetailViewModel course = await GetCourseAsync(courseId);
 
                 return course;
@@ -254,9 +254,9 @@ namespace mvc.Models.Services.Application
 
         public async Task<bool> IsTitleAvailableAsync(string title, int id)
         {
-            DataSet result = await db.QueryAsync(@$"SELECT COUNT(*) as Conteggio FROM Courses WHERE Title LIKE {title} AND Id <> {id}");
+            bool titoloEsistente = await db.QueryScalarAsync<bool>(@$"SELECT COUNT(*) as Conteggio FROM Courses WHERE Title LIKE {title} AND Id <> {id}");
             
-            bool disponibile = ((Int64) result.Tables[0].Rows[0]["Conteggio"]) == 0 ? true : false;
+            bool disponibile = !titoloEsistente;
             return disponibile;
 
 
@@ -283,26 +283,23 @@ namespace mvc.Models.Services.Application
         {
 
             // Verifico se l'id del corso esiste su DB
-            DataSet ds = await db.QueryAsync(@$"
+            bool corsoEsistente = await db.QueryScalarAsync<bool>(@$"
                     SELECT COUNT(*)
                       FROM Courses
                     WHERE
                         Id={i.Id}");            
 
-            int count = Convert.ToInt32( ds.Tables[0].Rows[0][0]);
-            if (count == 0)
+            
+            if (!corsoEsistente)
             {
                 throw new CourseNotFoundException(i.Id);
             }
 
 
-
-
-
            try
             {
                 // Salvataggio corso
-                ds = await db.QueryAsync(@$"
+                int rowsUpdated = await db.CommandAsync(@$"
                         UPDATE Courses SET 
                            Title = {i.Title},
                            Description = {i.Description},
@@ -314,17 +311,21 @@ namespace mvc.Models.Services.Application
                         WHERE
                            Id={i.Id}");
 
+                if (rowsUpdated == 0)
+                    throw new CourseNotFoundException(i.Id);
+
             }
             catch (Exception exc)
             {
                 throw new CourseTitleDuplicateException(i.Title, exc);
             }
 
+            // TODO: unire all'update sopra
             if (i.Image != null)
             {
                 string imagePath = await imagePersister.SaveCourseImageAsync(i.Id, i.Image);
                  // Salvataggio immagine
-                ds = await db.QueryAsync(@$"
+                int rowsUpdated  = await db.CommandAsync(@$"
                         UPDATE Courses SET 
                            LogoPath = {imagePath}
                         WHERE
