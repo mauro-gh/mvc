@@ -55,6 +55,9 @@ public partial class Course
 
     public string CurrentPriceCurrency { get; private set; } = null!;
 
+    public string RowVersion { get; set; }
+    
+
     public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 
     public void ChangeTitle(string newTitle)

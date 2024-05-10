@@ -50,7 +50,9 @@ namespace mvc.Models.InputModels
         public Money CurrentPrice {get;set; }
 
         [Display(Name = "Nuova immagine...")]
-        public IFormFile Image {get;set;}
+        public IFormFile? Image {get;set;} = null;
+        
+        public string? RowVersion { get; set; } = string.Empty;
 
         public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
         {
@@ -82,8 +84,8 @@ namespace mvc.Models.InputModels
                     Enum.Parse<Currency>(Convert.ToString(courseRow["CurrentPrice_Currency"])),
                     Convert.ToDecimal(courseRow["CurrentPrice_Amount"])
                 ),
-                Id = Convert.ToInt32(courseRow["Id"])//,
-                //RowVersion = Convert.ToString(courseRow["RowVersion"])
+                Id = Convert.ToInt32(courseRow["Id"]),
+                RowVersion = Convert.ToString(courseRow["RowVersion"])
             };
             // if (string.IsNullOrEmpty(courseEditInputModel.LogoPath))
             // {
@@ -102,8 +104,8 @@ namespace mvc.Models.InputModels
                 Email = course.Email,
                 LogoPath = course.LogoPath,
                 CurrentPrice = course.CurrentPrice,
-                FullPrice = course.FullPrice//,
-                //RowVersion = course.RowVersion
+                FullPrice = course.FullPrice,
+                RowVersion = course.RowVersion
             };
         }
     

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
@@ -311,6 +312,9 @@ namespace mvc.Models.Services.Application
                 c.ChangeDescription(inputModel.Description);
                 c.ChangeEmail(inputModel.Email);
 
+                dbContext.Entry(c).Property(c => c.RowVersion).OriginalValue = inputModel.RowVersion;
+
+
                 //TODO: aggiungere imagepersister e changeimagepath per salvare immagine
 
 
@@ -318,10 +322,19 @@ namespace mvc.Models.Services.Application
                 {
                     await dbContext.SaveChangesAsync();
                 }
-                catch (DbUpdateException exc)
+                // catch (DbUpdateException exc)
+                // {
+                    
+                //     throw new CourseTitleDuplicateException(inputModel.Title, exc);
+                // }
+                catch (DbUpdateConcurrencyException)
                 {
                     
-                    throw new CourseTitleDuplicateException(inputModel.Title, exc);
+                    throw new OptimisticConcurrencyException();
+                }
+                catch (Exception)
+                {
+                    throw;
                 }
 
                 return CourseDetailViewModel.FromEntity(c);

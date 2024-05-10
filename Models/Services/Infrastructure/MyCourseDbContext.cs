@@ -82,6 +82,9 @@ public partial class MyCourseDbContext : DbContext
             // entity.Property(e => e.LogoPath).HasColumnType("Text (100)");
             // entity.Property(e => e.Title).HasColumnType("Text (100)");
 
+            // per concorrenza ottimistica
+            entity.Property(course => course.RowVersion).IsRowVersion();
+
             #endregion
 
         });

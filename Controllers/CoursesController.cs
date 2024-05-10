@@ -159,6 +159,16 @@ namespace mvc.Controllers
                     TempData["MessaggioDiConferma"] = "Dati salvati su DB";
                     return RedirectToAction(nameof(Detail), new {id = inputModel.Id}); // verra' passato al routing per comporre la pag detail/19
                 }
+                catch (CourseNotFoundException)
+                {
+                    // DUPLICATO, aggiungiamo errore
+                    ModelState.AddModelError("Title", "Eccezione CourseNotFoundException");                     
+                }
+                catch (OptimisticConcurrencyException)
+                {
+                    // DUPLICATO, aggiungiamo errore
+                    ModelState.AddModelError("Title", "Ecezione OptimisticConcurrencyException");                     
+                }
                 catch (Exception ex)
                 {
                     // DUPLICATO, aggiungiamo errore

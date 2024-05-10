@@ -264,7 +264,7 @@ namespace mvc.Models.Services.Application
 
     public async Task<CourseEditInputModel> GetCourseForEditingAsync(int id)
     {
-        FormattableString query = $@"SELECT Id, Title, Description, LogoPath, Email, FullPrice_Amount, FullPrice_Currency, CurrentPrice_Amount, CurrentPrice_Currency FROM Courses WHERE Id={id}";
+        FormattableString query = $@"SELECT Id, Title, Description, LogoPath, Email, FullPrice_Amount, FullPrice_Currency, CurrentPrice_Amount, CurrentPrice_Currency, RowVersion FROM Courses WHERE Id={id}";
 
         DataSet dataSet = await db.QueryAsync(query);
 
@@ -309,15 +309,27 @@ namespace mvc.Models.Services.Application
                            FullPrice_Currency = {i.FullPrice.Currency},
                            FullPrice_Amount = {i.FullPrice.Amount}
                         WHERE
-                           Id={i.Id}");
+                           Id={i.Id} AND RowVersion={i.RowVersion}");
 
                 if (rowsUpdated == 0)
-                    throw new CourseNotFoundException(i.Id);
+                {
+                    // E' fallito per corso non trovato o record modificato da qualcun altro?
+                    if (corsoEsistente)
+                    {
+                        throw new OptimisticConcurrencyException() ;  
+                    }
+                    else
+                    {
+                        throw new CourseNotFoundException(i.Id);
+                    }
+                    
+                }
+                    
 
             }
-            catch (Exception exc)
+            catch (Exception)
             {
-                throw new CourseTitleDuplicateException(i.Title, exc);
+                throw ;
             }
 
             // TODO: unire all'update sopra
