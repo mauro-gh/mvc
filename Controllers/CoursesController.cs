@@ -181,7 +181,13 @@ namespace mvc.Controllers
             return View(inputModel);    
         }  
 
-
+        public async Task<IActionResult> Delete(CourseDeleteInputModel inputModel)
+        {
+            await cs.DeleteCourseAsync (inputModel);
+            //tempdata...
+            //redirect to lista corsi
+            return View();
+        }
 
         #region errors
 

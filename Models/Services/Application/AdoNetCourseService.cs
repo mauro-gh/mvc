@@ -352,5 +352,10 @@ namespace mvc.Models.Services.Application
 
 
         }
+
+        public Task DeleteCourseAsync(CourseDeleteInputModel inputModel)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -91,6 +91,9 @@ public partial class MyCourseDbContext : DbContext
             // per concorrenza ottimistica
             entity.Property(course => course.RowVersion).IsRowVersion();
 
+            entity.Property(course => course.Status).HasConversion<string>();
+            
+
             #endregion
 
         });

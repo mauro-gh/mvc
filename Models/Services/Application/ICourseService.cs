@@ -22,6 +22,7 @@ namespace mvc.Models.Services.Application
         Task<bool> IsTitleAvailableAsync(string title, int id);
         Task<CourseEditInputModel> GetCourseForEditingAsync(int id);
         Task<CourseDetailViewModel> SaveCourseAsync(CourseEditInputModel inputModel);
+        Task DeleteCourseAsync(CourseDeleteInputModel inputModel);
 
         public string Version { get; }
 
