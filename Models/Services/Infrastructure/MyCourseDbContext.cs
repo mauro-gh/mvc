@@ -30,6 +30,9 @@ public partial class MyCourseDbContext : DbContext
             entity.ToTable("Courses");  // nome tabella
             entity.HasKey(course => course.Id); // pk
 
+            entity.HasIndex(course => course.Title).IsUnique();
+            
+
             // mapping per owned types (Money)
             entity.OwnsOne(course => course.CurrentPrice, builder => {
                 builder.Property(money => money.Currency)
