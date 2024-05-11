@@ -4,6 +4,8 @@ using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 using mvc.Models.Entities;
+using mvc.Models.Enums;
+using mvc.Models.ValueObjects;
 
 namespace mvc.Models.ViewModels
 {
@@ -24,8 +26,16 @@ namespace mvc.Models.ViewModels
                 Author = (string) dr["Author"],
                 LogoPath = (string) dr["LogoPath"],
                 Rating = Convert.ToDouble( dr["Rating"]),
-                FullPriceAmount = Convert.ToDecimal( dr["FullPrice_Amount"]),
-                CurrentPriceAmount = Convert.ToDecimal(dr["CurrentPrice_Amount"]),
+                //FullPriceAmount = Convert.ToDecimal( dr["FullPrice_Amount"]),
+                //CurrentPriceAmount = Convert.ToDecimal(dr["CurrentPrice_Amount"]),
+                FullPrice = new Money(
+                    Enum.Parse<Currency>(Convert.ToString(dr["FullPrice_Currency"])),
+                    Convert.ToDecimal(dr["FullPrice_Amount"])
+                ),
+                CurrentPrice = new Money(
+                    Enum.Parse<Currency>(Convert.ToString(dr["CurrentPrice_Currency"])),
+                    Convert.ToDecimal(dr["CurrentPrice_Amount"])
+                ),                
                 Id = Convert.ToInt32(dr["id"]),
                 Lessons = new List<LessonViewModel>()
 
@@ -45,8 +55,10 @@ namespace mvc.Models.ViewModels
             Author = course.Author,
             LogoPath = course.LogoPath,
             Rating = Convert.ToDouble(course.Rating),
-            CurrentPriceAmount = Convert.ToDecimal(course.CurrentPriceAmount),
-            FullPriceAmount = Convert.ToDecimal(course.FullPriceAmount),
+            //CurrentPriceAmount = Convert.ToDecimal(course.CurrentPriceAmount),
+            //FullPriceAmount = Convert.ToDecimal(course.FullPriceAmount),
+                CurrentPrice = course.CurrentPrice,
+                FullPrice = course.FullPrice,            
             Lessons = new List<LessonViewModel>()
         };
     }        

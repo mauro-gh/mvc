@@ -58,7 +58,7 @@ namespace mvc.Customizations.TagHelpers
             //sanitizer.AllowedCssProperties.Add("background-color");
 
 
-            sanitizer.FilterUrl += FilterUrl;
+            //sanitizer.FilterUrl += FilterUrl;
             sanitizer.PostProcessNode += ProcessIFrames;
 
             return sanitizer;

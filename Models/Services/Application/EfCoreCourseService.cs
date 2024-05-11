@@ -35,25 +35,32 @@ namespace mvc.Models.Services.Application
                 CourseDetailViewModel corso = await dbContext.Courses
                     .AsNoTracking()
                     .Where(course => course.Id == id)
-                    .Select(course => new CourseDetailViewModel{
-                        Id = course.Id,
-                        Title = course.Title,
-                        Description = course.Description,
-                        LogoPath = course.LogoPath,
-                        Author = course.Author,
-                        Rating = course.Rating,
-                        CurrentPriceAmount = Convert.ToDecimal(course.CurrentPriceAmount),
-                        FullPriceAmount = Convert.ToDecimal(course.FullPriceAmount),
-                        Lessons = course.Lessons.Select(lesson => new LessonViewModel{
-                            Id = lesson.Id,
-                            Title = lesson.Title,
-                            Description = lesson.Description,
-                            Duration = lesson.Duration
-                        }).ToList() // serve una lista!
-                    })
+                    .Select(course => CourseDetailViewModel.FromEntity(course))
+                    // .Select(course => new CourseDetailViewModel{
+                    //     Id = course.Id,
+                    //     Title = course.Title,
+                    //     Description = course.Description,
+                    //     LogoPath = course.LogoPath,
+                    //     Author = course.Author,
+                    //     Rating = course.Rating,
+                    //     CurrentPriceAmount = Convert.ToDecimal(course.CurrentPriceAmount),
+                    //     FullPriceAmount = Convert.ToDecimal(course.FullPriceAmount),
+                    //     Lessons = course.Lessons.Select(lesson => new LessonViewModel{
+                    //         Id = lesson.Id,
+                    //         Title = lesson.Title,
+                    //         Description = lesson.Description,
+                    //         Duration = lesson.Duration
+                    //     }).ToList() // serve una lista!
+                    //})
                     .SingleAsync(); // va bene solo se restituisce 1 record, altrimenti eccezione
                     //.First --> restiuisce il primo, eccezione solo elenco vuoto
                     //.FirstOrDefaultAsync // restituisce il primo, null se vuoto, mai eccezioni
+
+            //.FirstOrDefaultAsync(); //Restituisce null se l'elenco è vuoto e non solleva mai un'eccezione
+            //.SingleOrDefaultAsync(); //Tollera il fatto che l'elenco sia vuoto e in quel caso restituisce null, oppure se l'elenco contiene più di 1 elemento, solleva un'eccezione
+            //.FirstAsync(); //Restituisce il primo elemento, ma se l'elenco è vuoto solleva un'eccezione
+            //.SingleAsync(); //Restituisce il primo elemento, ma se l'elenco è vuoto o contiene più di un elemento, solleva un'eccezione
+
 
                 return corso;
         }
@@ -131,11 +138,11 @@ namespace mvc.Models.Services.Application
                 case "CurrentPrice":
                     if (model.Ascending)
                     {
-                        baseQuery = baseQuery.OrderBy(course => course.CurrentPriceAmount);
+                        baseQuery = baseQuery.OrderBy(course => course.CurrentPrice.Amount);
                     }
                     else
                     {
-                        baseQuery = baseQuery.OrderByDescending(course => course.CurrentPriceAmount);
+                        baseQuery = baseQuery.OrderByDescending(course => course.CurrentPrice.Amount);
                     }
                     break;
                 case "Id":
@@ -161,17 +168,18 @@ namespace mvc.Models.Services.Application
             IQueryable<CourseViewModel> queryLinq = baseQuery
             .Where(course => course.Title.ToUpper().Contains(model.Search.ToUpper()))  // clausola WHERE
             //.AsNoTracking()     // non traccia le modifiche
-            .Select(course =>
-                new CourseViewModel     // sostituibile con CourseViewModel.FromEntity(course)
-                {
-                    Id = course.Id,
-                    Title = course.Title,
-                    LogoPath = course.LogoPath,
-                    Author = course.Author,
-                    Rating = course.Rating,
-                    CurrentPriceAmount = Convert.ToDecimal(course.CurrentPriceAmount),
-                    FullPriceAmount = Convert.ToDecimal(course.FullPriceAmount)
-                });
+            .Select(course => CourseViewModel.FromEntity(course));
+            // .Select(course =>
+            //     new CourseViewModel     // sostituibile con CourseViewModel.FromEntity(course)
+            //     {
+            //         Id = course.Id,
+            //         Title = course.Title,
+            //         LogoPath = course.LogoPath,
+            //         Author = course.Author,
+            //         Rating = course.Rating,
+            //         CurrentPriceAmount = Convert.ToDecimal(course.CurrentPriceAmount),
+            //         FullPriceAmount = Convert.ToDecimal(course.FullPriceAmount)
+            //     });
             //.OrderBy(course => course.Title);
             
             // la query viene inviata SOLO in questo punto, prima era solo preparata
@@ -245,12 +253,12 @@ namespace mvc.Models.Services.Application
             // nuova istanza
             var course = new Course(title, author);
 
-            var lesson01 = new Lesson()
-            {Title="Lezione EF 01", Description="Descrizione lezione 01"};
-            var lesson02 = new Lesson()
-            {Title="Lezione EF 02", Description="Descrizione lezione 02"};
-            course.Lessons.Add(lesson01);
-            course.Lessons.Add(lesson02);
+            // var lesson01 = new Lesson()
+            // {Title="Lezione EF 01", Description="Descrizione lezione 01"};
+            // var lesson02 = new Lesson()
+            // {Title="Lezione EF 02", Description="Descrizione lezione 02"};
+            // course.Lessons.Add(lesson01);
+            // course.Lessons.Add(lesson02);
 
 
             // la affidiamo al dbcontext

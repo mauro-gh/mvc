@@ -23,7 +23,8 @@ public partial class Course
 
         Lessons = new HashSet<Lesson>();
 
-        CurrentPrice = new Money(Currency.EUR, 0);
+        CurrentPrice = new 
+        (Currency.EUR, 0);
         FullPrice = new Money(Currency.EUR, 0);
         LogoPath = "/Courses/default.png";
         
@@ -39,23 +40,23 @@ public partial class Course
 
     public string Author { get; private set; } = null!;
 
-    public string? Email { get; private set; }
+    public string? Email { get; private set; } = string.Empty;
 
     public double Rating { get; private set; }
 
      public Money FullPrice { get; private set; }
 
-    public double FullPriceAmount { get; private set; }
+    //public decimal FullPriceAmount { get; private set; }
 
-    public string FullPriceCurrency { get; private set; } = null!;
+    //public string FullPriceCurrency { get; private set; } = null!;
 
     public Money CurrentPrice { get; private set; }
 
-    public double CurrentPriceAmount { get; private set; }
+    //public decimal CurrentPriceAmount { get; private set; }
 
-    public string CurrentPriceCurrency { get; private set; } = null!;
+    //public string CurrentPriceCurrency { get; private set; } = null!;
 
-    public string RowVersion { get; set; }
+    public string? RowVersion { get; set; } = string.Empty;
     
 
     public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();

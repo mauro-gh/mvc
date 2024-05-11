@@ -35,14 +35,18 @@ public partial class MyCourseDbContext : DbContext
                 builder.Property(money => money.Currency)
                 .HasConversion<string>()
                 .HasColumnName("CurrentPrice_Currency"); //Superfluo perché le nostre colonne seguono già la convenzione di nomi
-                builder.Property(money => money.Amount).HasColumnName("CurrentPrice_Amount").HasConversion<float>(); //Superfluo perché le nostre colonne seguono già la convenzione di nomi
+                builder.Property(money => money.Amount)
+                .HasColumnName("CurrentPrice_Amount")
+                .HasConversion<decimal>(); //Superfluo perché le nostre colonne seguono già la convenzione di nomi
             });
 
             entity.OwnsOne(course => course.FullPrice, builder => {
                 builder.Property(money => money.Currency)
                 .HasConversion<string>()
                 .HasColumnName("FullPrice_Currency");
-                builder.Property(money => money.Amount).HasColumnName("FullPrice_Amount").HasConversion<float>();
+                builder.Property(money => money.Amount)
+                .HasColumnName("FullPrice_Amount")
+                .HasConversion<decimal>();
             });            
 
             // mapping per le relazioni, il corso vede N lezioni
@@ -50,13 +54,15 @@ public partial class MyCourseDbContext : DbContext
                 .WithOne(lesson => lesson.Course)
                 .HasForeignKey(lesson => lesson.CourseId);
 
-            entity.Property(e => e.CurrentPriceAmount)
-                .HasColumnType("NUMERIC")
-                .HasColumnName("CurrentPrice_Amount");
+            // entity.Property(e => e.CurrentPriceAmount)
+            //     .HasColumnType("NUMERIC")
+            //     .HasColumnName("CurrentPrice_Amount");
 
-            entity.Property(e => e.FullPriceAmount)
-                .HasColumnType("NUMERIC")
-                .HasColumnName("FullPrice_Amount");
+            // entity.Property(e => e.FullPriceAmount)
+            //     .HasColumnType("NUMERIC")
+            //     .HasColumnName("FullPrice_Amount");
+
+                
 
 
 
@@ -66,19 +72,19 @@ public partial class MyCourseDbContext : DbContext
             // entity.Property(e => e.CurrentPriceAmount)
             //     .HasColumnType("NUMERIC")
             //     .HasColumnName("CurrentPrice_Amount");
-            entity.Property(e => e.CurrentPriceCurrency)
-                .HasDefaultValue("EUR")
-                .HasColumnType("TEXT(3)")
-                .HasColumnName("CurrentPrice_Currency");
+            // entity.Property(e => e.CurrentPriceCurrency)
+            //     .HasDefaultValue("EUR")
+            //     .HasColumnType("TEXT(3)")
+            //     .HasColumnName("CurrentPrice_Currency");
             // entity.Property(e => e.Description).HasColumnType("Text (10000)");
             // entity.Property(e => e.Email).HasColumnType("Text(100)");
             // entity.Property(e => e.FullPriceAmount)
             //     .HasColumnType("NUMERIC")
             //     .HasColumnName("FullPrice_Amount");
-            entity.Property(e => e.FullPriceCurrency)
-                .HasDefaultValue("EUR")
-                .HasColumnType("TEXT(3)")
-                .HasColumnName("FullPrice_Currency");
+            // entity.Property(e => e.FullPriceCurrency)
+            //     .HasDefaultValue("EUR")
+            //     .HasColumnType("TEXT(3)")
+            //     .HasColumnName("FullPrice_Currency");
             // entity.Property(e => e.LogoPath).HasColumnType("Text (100)");
             // entity.Property(e => e.Title).HasColumnType("Text (100)");
 

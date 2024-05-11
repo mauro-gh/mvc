@@ -20,9 +20,9 @@
                     <stelline punteggio="@Model.Rating"></stelline>
                 </div>
                 <div class="price">
-                    @Model.CurrentPriceAmount
-                    @if(!Model.CurrentPriceAmount.Equals(Model.FullPriceAmount)) {
-                        <br><s>@Model.FullPriceAmount</s>
+                    @Model.CurrentPrice.Amount
+                    @if(!Model.CurrentPrice.Amount.Equals(Model.FullPrice.Amount)) {
+                        <br><s>@Model.FullPrice.Amount</s>
                     }
                 </div>
                  <span>LogoPath: @Model.LogoPath</span>
