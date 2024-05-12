@@ -124,9 +124,11 @@ namespace mvc.Models.Services.Application
 
         }
 
-        public Task DeleteCourseAsync(CourseDeleteInputModel inputModel)
+        public async Task DeleteCourseAsync(CourseDeleteInputModel inputModel)
         {
-            throw new NotImplementedException();
+            await courseService.DeleteCourseAsync(inputModel);
+            memoryCache.Remove($"Course{inputModel.Id}");
+
         }
 
         public string Version => "1.0";

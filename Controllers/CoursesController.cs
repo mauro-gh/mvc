@@ -181,12 +181,15 @@ namespace mvc.Controllers
             return View(inputModel);    
         }  
 
-        public async Task<IActionResult> Delete(CourseDeleteInputModel inputModel)
+
+
+        [HttpPost]
+        public  async Task<IActionResult> Delete([FromForm]CourseDeleteInputModel inputModel)
         {
             await cs.DeleteCourseAsync (inputModel);
-            //tempdata...
+            TempData["MessaggioDiConferma"] = "Corso cancellato, attendere un minuto";
             //redirect to lista corsi
-            return View();
+            return RedirectToAction("Index"); //meglio il nameof
         }
 
         #region errors

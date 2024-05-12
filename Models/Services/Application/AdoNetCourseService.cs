@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.Extensions.Options;
+using mvc.Models.Enums;
 using mvc.Models.Exceptions;
 using mvc.Models.InputModels;
 using mvc.Models.Options;
@@ -132,8 +133,9 @@ namespace mvc.Models.Services.Application
                 FROM 
                     Courses 
                 WHERE 
-                    Title LIKE {"%" +model.Search +"%"}
-                    ORDER BY {(Sql) orderby} {(Sql) direction}
+                    Title LIKE {"%" +model.Search +"%"} AND
+                    Status <> {nameof(CourseStatus.Deleted)}
+                ORDER BY {(Sql) orderby} {(Sql) direction}
                 LIMIT {model.Limit} 
                 OFFSET {model.Offset};
                 SELECT
@@ -141,7 +143,8 @@ namespace mvc.Models.Services.Application
                 FROM 
                     Courses 
                 WHERE 
-                    Title LIKE {"%" +model.Search +"%"}
+                    Title LIKE {"%" +model.Search +"%"} AND
+                    Status <> {nameof(CourseStatus.Deleted)}
                 "; 
 
             DataSet ds = await db.QueryAsync(query);
@@ -262,7 +265,7 @@ namespace mvc.Models.Services.Application
 
         }
 
-    public async Task<CourseEditInputModel> GetCourseForEditingAsync(int id)
+        public async Task<CourseEditInputModel> GetCourseForEditingAsync(int id)
     {
         FormattableString query = $@"SELECT Id, Title, Description, LogoPath, Email, FullPrice_Amount, FullPrice_Currency, CurrentPrice_Amount, CurrentPrice_Currency, RowVersion FROM Courses WHERE Id={id}";
 
@@ -353,9 +356,23 @@ namespace mvc.Models.Services.Application
 
         }
 
-        public Task DeleteCourseAsync(CourseDeleteInputModel inputModel)
+        
+        public async Task DeleteCourseAsync(CourseDeleteInputModel i)
         {
-            throw new NotImplementedException();
+            int updatedRows = await db.CommandAsync(@$"
+                UPDATE Courses 
+                    SET Status={nameof(CourseStatus.Deleted)}
+                WHERE 
+                    Id = {i.Id} AND
+                    Status <> {nameof(CourseStatus.Deleted)}");
+
+            if (updatedRows== 0)
+            {
+                throw new CourseNotFoundException(i.Id);
+            }
+
+
+
         }
     }
 }
