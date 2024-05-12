@@ -27,6 +27,8 @@ public partial class Course
         (Currency.EUR, 0);
         FullPrice = new Money(Currency.EUR, 0);
         LogoPath = "/Courses/default.png";
+
+        Status = CourseStatus.Draft;
         
     }
 
@@ -46,18 +48,12 @@ public partial class Course
 
      public Money FullPrice { get; private set; }
 
-    //public decimal FullPriceAmount { get; private set; }
-
-    //public string FullPriceCurrency { get; private set; } = null!;
-
     public Money CurrentPrice { get; private set; }
-
-    //public decimal CurrentPriceAmount { get; private set; }
-
-    //public string CurrentPriceCurrency { get; private set; } = null!;
 
     public string? RowVersion { get; set; } = string.Empty;
     
+    public CourseStatus Status {get;private set;}
+
 
     public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 
@@ -109,5 +105,10 @@ public partial class Course
         }
 
         Email = email;
+    }
+
+    public void ChangeStatus (CourseStatus newStatus)
+    {
+        Status = newStatus;
     }
 }

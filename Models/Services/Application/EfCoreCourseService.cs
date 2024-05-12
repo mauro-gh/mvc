@@ -356,6 +356,23 @@ namespace mvc.Models.Services.Application
 
 
         }
+
+        public async Task DeleteCourseAsync(CourseDeleteInputModel i)
+        {
+            // ottengo l'entita'
+            Course c = dbContext.Courses.Find(i.Id);
+
+            if (c == null)
+            {
+                throw new CourseNotFoundException(i.Id);
+            }
+
+            // elimino il corso logicamente
+            c.ChangeStatus(Enums.CourseStatus.Deleted);
+            await dbContext.SaveChangesAsync();
+
+
+        }
     }
 }
 

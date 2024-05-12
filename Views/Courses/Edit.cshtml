@@ -5,9 +5,12 @@
             <div class="col-md-9">
                 <h1>@ViewData["Title"]</h1>
             </div>
-            <div class="col-md-3 d-flex align-items-center">
+            <div class="col-md-3 d-flex align-items-center btn-toolbar">
                 <button type="submit" class="btn btn-primary btn-lg btn-block">Salva</button>
-                <button type="button" class="btn btn-danger btn-lg ml-3"><i class="fas fa-trash-alt"></i></button>
+                <!--<button type="submit" class="btn btn-danger btn-lg ml-3"  asp-controller="Courses" asp-action="Delete"  asp-route-id="@Model.Id" ><i class="fas fa-trash-alt">Delete</i></button>-->
+
+                <button type="button" class="btn btn-danger btn-lg" style="margin-left: 20px;" data-bs-toggle="modal" data-bs-target="#delete-modal"><i class="fas fa-trash-alt"></i></button>
+
             </div>
         </div>
         <div class="row">
@@ -68,6 +71,27 @@
             </div>
         </div>
     </form>
+    <!-- Modal -->
+    <form method="post" asp-action="Delete" asp-route-id="@Model.Id">    
+        <input type="hidden" asp-for="Id" >
+        <div class="modal fade" id="delete-modal" tabindex="-1" aria-labelledby="delete-modal-title" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title fs-5" id="delete-modal-title">Conferma eliminazione</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Confermi eliminazione del corso @Model.Title ?</p>
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Annulla</button>
+                        <button type="submit" class="btn btn-danger">Conferma</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+</form>
 </section>
 @section Scripts
 {

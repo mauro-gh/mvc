@@ -183,6 +183,15 @@ namespace mvc.Controllers
 
 
 
+        [HttpPost]
+        public  async Task<IActionResult> Delete([FromForm]CourseDeleteInputModel inputModel)
+        {
+            await cs.DeleteCourseAsync (inputModel);
+            TempData["MessaggioDiConferma"] = "Corso cancellato, attendere un minuto";
+            //redirect to lista corsi
+            return RedirectToAction("Index"); //meglio il nameof
+        }
+
         #region errors
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using mvc.Models.Entities;
 
 namespace mvc.Models.Services.Infrastructure;
@@ -93,6 +94,12 @@ public partial class MyCourseDbContext : DbContext
 
             // per concorrenza ottimistica
             entity.Property(course => course.RowVersion).IsRowVersion();
+
+            entity.Property(course => course.Status).HasConversion<string>();
+
+            // Global Query Filter
+            entity.HasQueryFilter(c => c.Status != Enums.CourseStatus.Deleted);
+            
 
             #endregion
 
