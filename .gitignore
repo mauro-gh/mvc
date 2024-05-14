@@ -4,5 +4,3 @@ bin
 wwwroot
 Views/Courses/Edit.cshtml.bak
 Models/InputModels/CourseEditInputModel.cs.bak
-Data/MyCourse.db-shm
-Data/MyCourse.db-wal
