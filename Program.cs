@@ -6,9 +6,12 @@ using mvc;
 using mvc.Models.Options;
 using mvc.Models.Services.Application;
 using mvc.Models.Services.Infrastructure;
-
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Options;
+using mvc.Customizations.Identity;
 internal class Program
 {
+
 
     private static void Main(string[] args)
     {
@@ -21,6 +24,10 @@ internal class Program
         //builder.Services.AddControllersWithViews();
 
         //builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
+
+        // Razor Pages, per mostrare le UI di authentication
+        builder.Services.AddRazorPages();
+
 
         builder.Services.AddMvc(options =>
         {
@@ -36,8 +43,8 @@ internal class Program
         // deve preparare alla gestione di oggetti di tipo CourseService,
         // net core deve costruirlo e passarlo
         //builder.Services.AddTransient<ICourseService, CourseService>();  // versione con valori auto generati da codice
-        builder.Services.AddTransient<ICourseService, AdoNetCourseService>(); // versione con valori letti da DB con adonet
-        //builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
+        //builder.Services.AddTransient<ICourseService, AdoNetCourseService>(); // versione con valori letti da DB con adonet
+        builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
 
         //builder.Services.AddDbContext<MyCourseDbContext>(); 
         // lettura di una chiave
@@ -67,6 +74,18 @@ internal class Program
         builder.Services.Configure<CoursesOptions>(startup.Config.GetSection("Courses")); 
         // Cache:
         builder.Services.Configure<MemoryCacheOptions>(startup.Config.GetSection("MemoryCache"));
+
+        // Registrazione Identity, con criteri di complessita' della password
+        builder.Services.AddDefaultIdentity<IdentityUser>(options =>{
+                  options.Password.RequireDigit = true;
+                  options.Password.RequiredLength = 6;
+                  options.Password.RequireNonAlphanumeric = false;
+                  options.Password.RequireLowercase = false;
+                  options.Password.RequireUppercase = false;
+                  //options.Password.RequiredUniqueChars = 2;
+                  })
+            .AddPasswordValidator<CommonPasswordValidator<IdentityUser>>()
+            .AddEntityFrameworkStores<MyCourseDbContext>();
         
 
         var app = builder.Build();
@@ -92,15 +111,23 @@ internal class Program
             
         }
 
-        // middleware per jpg, css, ecc...
+        // 1. contenuti statici middleware per jpg, css, ecc...
         app.UseStaticFiles();
 
-        // endpoint routing middleware
+        // 2. endpoint routing middleware (\courses, selezionera' l'action corretto per la richiesta)
         app.UseRouting();
 
-        //endpoint middleware
+        // Middleware Identity qui in mezzo
+        app.UseAuthentication();
+        // da ora in poi la richiesta e' autenticata
+        app.UseAuthorization();
+        // se l'utente non ha il privilegio, torna indietro
+
+
+        // 3. endpoint middleware (esegue il controller corretto)
         app.UseEndpoints(routeBuilder =>{
             routeBuilder.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
+            routeBuilder.MapRazorPages();
         });
 
 

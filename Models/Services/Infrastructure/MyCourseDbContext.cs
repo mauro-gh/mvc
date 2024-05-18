@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using mvc.Models.Entities;
 
 namespace mvc.Models.Services.Infrastructure;
 
-public partial class MyCourseDbContext : DbContext
+public partial class MyCourseDbContext : IdentityDbContext
 {
 
 
@@ -25,7 +26,10 @@ public partial class MyCourseDbContext : DbContext
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        
+        //Eredito il mapping del modello base, ovvero IdentityDbContext
+        base.OnModelCreating(modelBuilder);
+
+
         modelBuilder.Entity<Course>(entity =>
         {
             entity.ToTable("Courses");  // nome tabella

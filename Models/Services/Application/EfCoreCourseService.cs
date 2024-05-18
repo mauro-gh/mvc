@@ -19,11 +19,15 @@ namespace mvc.Models.Services.Application
     {
         private readonly MyCourseDbContext dbContext;
         private readonly IOptionsMonitor<CoursesOptions> coursesOptions;
+        private IHttpContextAccessor httpContextAccessor;
 
-        public EfCoreCourseService(MyCourseDbContext dbContext, IOptionsMonitor<CoursesOptions> coursesOptions )
+        public EfCoreCourseService(MyCourseDbContext dbContext, 
+                IOptionsMonitor<CoursesOptions> coursesOptions,
+                IHttpContextAccessor httpContextAccessor )
         {
             this.dbContext = dbContext;
             this.coursesOptions = coursesOptions;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public string Version => "1.0";
@@ -67,6 +71,8 @@ namespace mvc.Models.Services.Application
 
         public async Task<ListViewModel<CourseViewModel>> GetCoursesAsync(CourseListInputModel model)
         {
+
+            var user = httpContextAccessor.HttpContext;
             // mappatura tra viewmodel e classe ef
             // List<CourseViewModel> courses = await dbContext.Courses.Select(course =>
             // new CourseViewModel
