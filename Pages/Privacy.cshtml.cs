@@ -6,13 +6,13 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
 
-namespace mvc.Views.Shared
+namespace mvc.Pages
 {
-    public class _Validation : PageModel
+    public class Privacy : PageModel
     {
-        private readonly ILogger<_Validation> _logger;
+        private readonly ILogger<Privacy> _logger;
 
-        public _Validation(ILogger<_Validation> logger)
+        public Privacy(ILogger<Privacy> logger)
         {
             _logger = logger;
         }

@@ -78,7 +78,7 @@ internal class Program
         // Registrazione Identity, con criteri di complessita' della password
         builder.Services.AddDefaultIdentity<IdentityUser>(options =>{
                   options.Password.RequireDigit = true;
-                  options.Password.RequiredLength = 6;
+                  options.Password.RequiredLength = 8;
                   options.Password.RequireNonAlphanumeric = false;
                   options.Password.RequireLowercase = false;
                   options.Password.RequireUppercase = false;
