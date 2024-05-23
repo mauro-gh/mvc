@@ -1,10 +1,11 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using mvc.Models.Entities;
 
 namespace mvc.Models.Services.Infrastructure;
 
-public class MyCourseDbContex : IdentityDbContext<IdentityUser>
+public class MyCourseDbContex : IdentityDbContext<ApplicationUser>
 {
     public MyCourseDbContex(DbContextOptions<MyCourseDbContex> options)
         : base(options)

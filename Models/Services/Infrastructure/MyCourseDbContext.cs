@@ -7,7 +7,7 @@ using mvc.Models.Entities;
 
 namespace mvc.Models.Services.Infrastructure;
 
-public partial class MyCourseDbContext : IdentityDbContext
+public partial class MyCourseDbContext : IdentityDbContext<ApplicationUser>
 {
 
 

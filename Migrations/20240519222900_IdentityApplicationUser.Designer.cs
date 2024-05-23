@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using mvc.Models.Services.Infrastructure;
 
@@ -10,9 +11,11 @@ using mvc.Models.Services.Infrastructure;
 namespace mvc.Migrations
 {
     [DbContext(typeof(MyCourseDbContext))]
-    partial class MyCourseDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240519222900_IdentityApplicationUser")]
+    partial class IdentityApplicationUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.5");

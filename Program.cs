@@ -9,6 +9,7 @@ using mvc.Models.Services.Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using mvc.Customizations.Identity;
+using mvc.Models.Entities;
 internal class Program
 {
 
@@ -76,7 +77,7 @@ internal class Program
         builder.Services.Configure<MemoryCacheOptions>(startup.Config.GetSection("MemoryCache"));
 
         // Registrazione Identity, con criteri di complessita' della password
-        builder.Services.AddDefaultIdentity<IdentityUser>(options =>{
+        builder.Services.AddDefaultIdentity<ApplicationUser>(options =>{
                   options.Password.RequireDigit = true;
                   options.Password.RequiredLength = 8;
                   options.Password.RequireNonAlphanumeric = false;
@@ -84,7 +85,8 @@ internal class Program
                   options.Password.RequireUppercase = false;
                   //options.Password.RequiredUniqueChars = 2;
                   })
-            .AddPasswordValidator<CommonPasswordValidator<IdentityUser>>()
+            .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
+            .AddPasswordValidator<CommonPasswordValidator<ApplicationUser>>()
             .AddEntityFrameworkStores<MyCourseDbContext>();
         
 
