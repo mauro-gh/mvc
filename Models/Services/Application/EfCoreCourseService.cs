@@ -254,7 +254,8 @@ namespace mvc.Models.Services.Application
             // dbContext.Entry(course).State = EntityState.Added
 
             string title = inputModel.Title;
-            string author = "Pippo Pelo EF" ;
+
+            string author = httpContextAccessor.HttpContext.User.FindFirst("NomeCompleto").Value;
 
             // nuova istanza
             var course = new Course(title, author);

@@ -22,6 +22,7 @@ namespace mvc.Models.Services.Application
         private readonly ILogger<AdoNetCourseService> logger;
         private readonly IDatabaseAccessor db;
         private IImagePersister imagePersister;
+        private readonly IHttpContextAccessor httpContextAccessor;
         private readonly IOptionsMonitor<CoursesOptions> coursesOptions;
 
         public string Version => throw new NotImplementedException();
@@ -30,7 +31,8 @@ namespace mvc.Models.Services.Application
             ILogger<AdoNetCourseService> logger,    // log con sua categoria
             IDatabaseAccessor db, // nostra interfaccia per implementare metodo QueryAsync
             IOptionsMonitor<CoursesOptions> coursesOptions, // sezione di configurazione nel appsetting
-            IImagePersister imagePersister      // nostra interfaccia per persistere immagine
+            IImagePersister imagePersister,      // nostra interfaccia per persistere immagine
+            IHttpContextAccessor httpContextAccessor    // per ottenere la classe User dalla Identity
             )
         {
             this.coursesOptions = coursesOptions;
@@ -40,6 +42,7 @@ namespace mvc.Models.Services.Application
             this.logger = logger;
             this.db = db;
             this.imagePersister = imagePersister;
+            this.httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<CourseDetailViewModel> GetCourseAsync(int id)
@@ -214,7 +217,10 @@ namespace mvc.Models.Services.Application
         public async Task<CourseDetailViewModel> CreateCourseAsync(CourseCreateInputModel inputModel)
         {
             string title = inputModel.Title;
-            string author = "Pippo Pelo";
+            //string author = httpContextAccessor.HttpContext.User.Claims.First(claim => claim.Type == "NomeCompleto").Value;
+            string authorxxx = httpContextAccessor.HttpContext.User.FindFirst("FullName").Value;
+            string author = httpContextAccessor.HttpContext.User.FindFirst("NomeCompleto").Value;
+
 
             try
             {
