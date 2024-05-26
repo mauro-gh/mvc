@@ -9,5 +9,7 @@ namespace mvc.Models.Entities
     public class ApplicationUser : IdentityUser
     {
         public string FullName { get; set; } = string.Empty;
+
+        public virtual ICollection<Course> AuthoredCourses { get; set; }
     }
 }

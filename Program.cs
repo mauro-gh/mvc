@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using mvc.Customizations.Identity;
 using mvc.Models.Entities;
+using Microsoft.AspNetCore.Identity.UI.Services;
 internal class Program
 {
 
@@ -67,6 +68,10 @@ internal class Program
         builder.Services.AddTransient<ICachedCourseService, MemoryCacheCourseService>();
         // per persistre immagini
         builder.Services.AddSingleton<IImagePersister, MagickNetImagePersister>();
+        // per inviare le mail con mailkit
+        builder.Services.AddSingleton<IEmailSender, MailKitEmailSender>();
+        
+
         
 
         // Options (verra' iniettato dalla DI tramite IOptionsMonitor<ConnectionStringsOptions> connectionStringsOptions))
@@ -78,16 +83,18 @@ internal class Program
 
         // Registrazione Identity, con criteri di complessita' della password
         builder.Services.AddDefaultIdentity<ApplicationUser>(options =>{
-                  options.Password.RequireDigit = true;
-                  options.Password.RequiredLength = 8;
+                  options.Password.RequireDigit = false;
+                  options.Password.RequiredLength = 6;
                   options.Password.RequireNonAlphanumeric = false;
                   options.Password.RequireLowercase = false;
                   options.Password.RequireUppercase = false;
                   //options.Password.RequiredUniqueChars = 2;
+                  options.SignIn.RequireConfirmedAccount = true;
                   })
             .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
             .AddPasswordValidator<CommonPasswordValidator<ApplicationUser>>()
             .AddEntityFrameworkStores<MyCourseDbContext>();
+
         
 
         var app = builder.Build();

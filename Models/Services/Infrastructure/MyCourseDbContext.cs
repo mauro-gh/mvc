@@ -58,9 +58,19 @@ public partial class MyCourseDbContext : IdentityDbContext<ApplicationUser>
             });            
 
             // mapping per le relazioni, il corso vede N lezioni
+            // relazione corso (identita principale) - lezioni (non puo' esistere senza corso)
             entity.HasMany(course => course.Lessons)
                 .WithOne(lesson => lesson.Course)
                 .HasForeignKey(lesson => lesson.CourseId);
+
+            // ogni corso ha un solo AUTORE, tramite:
+            // corso AuthorId = utenti id
+            // relazione corso (non puo' esistere senza corso) - utente (identita' principale)
+            entity.HasOne(course => course.AuthorUser)
+                .WithMany(user => user.AuthoredCourses)
+                .HasForeignKey(course => course.AuthorId);
+
+
 
             // entity.Property(e => e.CurrentPriceAmount)
             //     .HasColumnType("NUMERIC")

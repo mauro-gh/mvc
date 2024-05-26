@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -257,8 +258,10 @@ namespace mvc.Models.Services.Application
 
             string author = httpContextAccessor.HttpContext.User.FindFirst("NomeCompleto").Value;
 
+            string authorId = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value;
+
             // nuova istanza
-            var course = new Course(title, author);
+            var course = new Course(title, author,authorId);
 
             // var lesson01 = new Lesson()
             // {Title="Lezione EF 01", Description="Descrizione lezione 01"};

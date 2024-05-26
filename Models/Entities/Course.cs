@@ -7,7 +7,7 @@ namespace mvc.Models.Entities;
 
 public partial class Course
 {
-    public Course(string title, string author)
+    public Course(string title, string author, string authorId)
     {
         if (string.IsNullOrEmpty(title))
         {
@@ -20,6 +20,7 @@ public partial class Course
 
         Title = title;
         Author = author;
+        AuthorId = authorId;
 
         Lessons = new HashSet<Lesson>();
 
@@ -54,6 +55,9 @@ public partial class Course
     
     public CourseStatus Status {get;private set;}
 
+    public string AuthorId { get; set; }
+
+    public virtual ApplicationUser AuthorUser {get;set;}
 
     public virtual ICollection<Lesson> Lessons { get; set; } = new List<Lesson>();
 
