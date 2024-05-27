@@ -89,7 +89,9 @@ internal class Program
                   options.Password.RequireLowercase = false;
                   options.Password.RequireUppercase = false;
                   //options.Password.RequiredUniqueChars = 2;
-                  options.SignIn.RequireConfirmedAccount = true;
+                  options.SignIn.RequireConfirmedAccount = true; // attiva invio email di registrazione
+                  options.Lockout.MaxFailedAccessAttempts = 3;
+                  options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
                   })
             .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
             .AddPasswordValidator<CommonPasswordValidator<ApplicationUser>>()
