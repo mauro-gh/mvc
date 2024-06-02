@@ -11,11 +11,11 @@ namespace mvc.Models.Services.Infrastructure
         
         
         // per le query
-        Task<DataSet> QueryAsync(FormattableString query);
+        Task<DataSet> QueryAsync(FormattableString query, CancellationToken token = default);
         // per le query con risultato scalare
-        Task<T> QueryScalarAsync<T>(FormattableString formattableQuery);
+        Task<T> QueryScalarAsync<T>(FormattableString formattableQuery, CancellationToken token = default);
         // per le update
-        Task<int> CommandAsync(FormattableString formattableCommand);
+        Task<int> CommandAsync(FormattableString formattableCommand, CancellationToken token = default);
 
     }
 }

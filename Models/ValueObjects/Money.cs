@@ -37,4 +37,8 @@ public record Money
     {
         return $"{Currency} {Amount:0.00}";
     }
+
+    //    Equals ?
+
+    
 }

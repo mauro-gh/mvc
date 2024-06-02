@@ -45,8 +45,8 @@ internal class Program
         // deve preparare alla gestione di oggetti di tipo CourseService,
         // net core deve costruirlo e passarlo
         //builder.Services.AddTransient<ICourseService, CourseService>();  // versione con valori auto generati da codice
-        //builder.Services.AddTransient<ICourseService, AdoNetCourseService>(); // versione con valori letti da DB con adonet
-        builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
+        builder.Services.AddTransient<ICourseService, AdoNetCourseService>(); // versione con valori letti da DB con adonet
+        //builder.Services.AddTransient<ICourseService, EfCoreCourseService>();  // versione con valori letti da entity framework
 
         //builder.Services.AddDbContext<MyCourseDbContext>(); 
         // lettura di una chiave
@@ -95,9 +95,11 @@ internal class Program
                   })
             .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
             .AddPasswordValidator<CommonPasswordValidator<ApplicationUser>>()
-            .AddEntityFrameworkStores<MyCourseDbContext>();
+            //.AddEntityFrameworkStores<MyCourseDbContext>()
+            .AddUserStore<AdoNetUserStore>();
+            
+        // UserStore
 
-        
 
         var app = builder.Build();
 

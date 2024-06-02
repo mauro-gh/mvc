@@ -30,7 +30,7 @@ namespace mvc.Models.Services.Infrastructure
         /// </summary>
         /// <param name="fquery"></param>
         /// <returns></returns>
-        public async Task<DataSet> QueryAsync(FormattableString fquery)
+        public async Task<DataSet> QueryAsync(FormattableString fquery, CancellationToken token)
         {
 
             // log strutturato
@@ -42,7 +42,7 @@ namespace mvc.Models.Services.Infrastructure
             using SqliteConnection conn = await GetOpenConnection(connectionString);
             using SqliteCommand cmd = GetCommand(fquery, conn);
 
-            using (var reader = await cmd.ExecuteReaderAsync())
+            using (var reader = await cmd.ExecuteReaderAsync(token))
             {
                 DataSet ds = new DataSet();
                 var i = 0;
@@ -70,7 +70,7 @@ namespace mvc.Models.Services.Infrastructure
         /// </summary>
         /// <param name="fCommand"></param>
         /// <returns></returns>
-        public async Task<int> CommandAsync(FormattableString fCommand)
+        public async Task<int> CommandAsync(FormattableString fCommand, CancellationToken token)
         {
 
             // TODO: aggiungere try catch con sqlitexception
@@ -80,7 +80,7 @@ namespace mvc.Models.Services.Infrastructure
             using SqliteConnection conn = await GetOpenConnection(connectionString);
             using SqliteCommand cmd = GetCommand(fCommand, conn);
 
-            int rows = await cmd.ExecuteNonQueryAsync();
+            int rows = await cmd.ExecuteNonQueryAsync(token);
             return rows;
 
 
@@ -92,14 +92,14 @@ namespace mvc.Models.Services.Infrastructure
         /// <typeparam name="T"></typeparam>
         /// <param name="fQuery"></param>
         /// <returns></returns>
-        public async Task<T> QueryScalarAsync<T>(FormattableString fQuery)
+        public async Task<T> QueryScalarAsync<T>(FormattableString fQuery, CancellationToken token)
         {
             string connectionString = connectionStringsOptions.CurrentValue.Default;
 
             using SqliteConnection conn = await GetOpenConnection(connectionString);
             using SqliteCommand cmd = GetCommand(fQuery, conn);
 
-            object result = await cmd.ExecuteScalarAsync();
+            object result = await cmd.ExecuteScalarAsync(token);
             return (T) Convert.ChangeType(result, typeof(T));
 
         }

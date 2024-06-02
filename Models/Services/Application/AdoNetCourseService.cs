@@ -218,7 +218,8 @@ namespace mvc.Models.Services.Application
         {
             string title = inputModel.Title;
             //string author = httpContextAccessor.HttpContext.User.Claims.First(claim => claim.Type == "NomeCompleto").Value;
-            string authorxxx = httpContextAccessor.HttpContext.User.FindFirst("FullName").Value;
+            // GENERA ECCEZIONE se non esiste
+            //string authorxxx = httpContextAccessor.HttpContext.User.FindFirst("FullName").Value;
             string author = httpContextAccessor.HttpContext.User.FindFirst("NomeCompleto").Value;
 
 
