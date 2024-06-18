@@ -34,14 +34,19 @@ namespace mvc.Controllers
             switch (feature.Error)
             {
                 case CourseNotFoundException exc:
-                    ViewData["Title"] = "Errore";
+                    ViewData["Title"] = "Corso inesistente";
                     Response.StatusCode = 404;
                     return View("CourseNotFound", errorViewModel);
 
+                case SendMailException exc:
+                    ViewData["Title"] = "Errore invio messaggio";
+                    Response.StatusCode=500;
+                    return View();
 
 
-                default:                    
-                    return View(errorViewModel);
+                default:
+                    ViewData["Title"] = "Errore";
+                    return View();
 
             }
             

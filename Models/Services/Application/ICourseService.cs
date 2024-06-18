@@ -23,6 +23,7 @@ namespace mvc.Models.Services.Application
         Task<CourseEditInputModel> GetCourseForEditingAsync(int id);
         Task<CourseDetailViewModel> SaveCourseAsync(CourseEditInputModel inputModel);
         Task DeleteCourseAsync(CourseDeleteInputModel inputModel);
+        Task SendQuestionToCourseAuthorAsync(int id, string contactQuestion);
 
         public string Version { get; }
 

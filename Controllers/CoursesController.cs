@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using mvc.Models.Exceptions;
@@ -13,7 +14,7 @@ using mvc.Models.ViewModels;
 namespace mvc.Controllers
 {
 
-
+    [Authorize]
     public class CoursesController : Controller
     {
 
@@ -34,6 +35,7 @@ namespace mvc.Controllers
         // }
 
         // parametri prima: string search = null, int page = 1, string orderby = "CurrentPrice",bool ascending = true
+        [AllowAnonymous]
         public async Task<IActionResult> Index([FromQuery]CourseListInputModel model)
         {
             // questo metodo si occupa anche della ricerca
@@ -87,7 +89,7 @@ namespace mvc.Controllers
 
         // questa action ha l'unica responsabilita' di visualizzare una view vuota, e' in get
         // non serve sia async, non legge da DB
-        [HttpGet]
+        [HttpGet]        
         public IActionResult Create()
         {
             ViewData["Title"] = "Inserimento nuovo corso (GET)";

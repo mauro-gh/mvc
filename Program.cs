@@ -11,6 +11,8 @@ using Microsoft.Extensions.Options;
 using mvc.Customizations.Identity;
 using mvc.Models.Entities;
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 internal class Program
 {
 
@@ -28,7 +30,10 @@ internal class Program
         //builder.Services.AddMvc(options => options.EnableEndpointRouting = false);
 
         // Razor Pages, per mostrare le UI di authentication
-        builder.Services.AddRazorPages();
+        builder.Services.AddRazorPages(
+            //options =>
+            //{options.Conventions.AllowAnonymousToPage("/Privacy");}
+        );
 
 
         builder.Services.AddMvc(options =>
@@ -40,6 +45,12 @@ internal class Program
             homeProfile.Location = startup.Config.GetValue<ResponseCacheLocation>("ResponseCache:Home:Location");
             // aggiungo profilo
             options.CacheProfiles.Add("Home", homeProfile);
+
+            // per le autorizzazione degli utenti: non funziona
+            //AuthorizationPolicyBuilder policyBuilder = new();
+            //AuthorizationPolicy p = policyBuilder.RequireAuthenticatedUser().Build();
+            //AuthorizeFilter f = new(p);
+            //options.Filters.Add(f);
         });
 
         // deve preparare alla gestione di oggetti di tipo CourseService,
@@ -70,6 +81,8 @@ internal class Program
         builder.Services.AddSingleton<IImagePersister, MagickNetImagePersister>();
         // per inviare le mail con mailkit
         builder.Services.AddSingleton<IEmailSender, MailKitEmailSender>();
+        builder.Services.AddSingleton<IEmailClient, MailKitEmailSender>();
+
         
 
         
@@ -133,7 +146,7 @@ internal class Program
         // Middleware Identity qui in mezzo
         app.UseAuthentication();
         // da ora in poi la richiesta e' autenticata
-        app.UseAuthorization();
+        app.UseAuthorization(); // sempre in mezzo a UseRouting e UseEndpoints
         // se l'utente non ha il privilegio, torna indietro
 
 

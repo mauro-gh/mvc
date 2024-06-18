@@ -131,6 +131,11 @@ namespace mvc.Models.Services.Application
 
         }
 
+        public Task SendQuestionToCourseAuthorAsync(int id, string contactQuestion)
+        {
+            return courseService.SendQuestionToCourseAuthorAsync(id, contactQuestion);
+        }
+
         public string Version => "1.0";
         
     }

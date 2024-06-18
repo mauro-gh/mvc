@@ -1,0 +1,19 @@
+@page
+@model mvc.Pages.Contact
+@{
+    ViewData["Title"] = "Contact";
+}
+<br>
+<h2>Fai una domanda a @Model.Course.Author, docente di "@Model.Course.Title"</h2>
+
+<div class="row">
+    <div class="col-12">
+        <form method="POST">
+            <div asp-validation-summary="All"></div>
+            <label asp-for="ContactQuestion"></label>
+            <textarea asp-for="ContactQuestion" class="form-control" rows="5"></textarea>
+            <button type="submit" class="btn btn-primary mt-3"><i class="far far fa-paper-plane"></i>  Invia domanda</button>
+        </form>
+    </div>
+    
+</div>

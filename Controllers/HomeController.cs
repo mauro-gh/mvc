@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using mvc.Models;
 using mvc.Models.Services.Application;
@@ -21,8 +22,8 @@ public class HomeController : Controller
 
     // Attributo per mettere nella cache del browser questo action
     // FromService: serve a dire al model binding che questa istanza deve essere cercata
-    // tra i servizi registrati per la dependeny inhection
-    [ResponseCache(CacheProfileName = "Home")]
+    // tra i servizi registrati per la dependeny injection
+    [AllowAnonymous, ResponseCache(CacheProfileName = "Home")]
     public async Task<IActionResult> Index([FromServices] ICachedCourseService courseService)
     {
         ViewData["ViewDataTitle"] = "Benvenuti";

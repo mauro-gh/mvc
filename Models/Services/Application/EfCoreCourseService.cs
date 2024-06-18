@@ -383,6 +383,11 @@ namespace mvc.Models.Services.Application
 
 
         }
+
+        public Task SendQuestionToCourseAuthorAsync(int id, string contactQuestion)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
 

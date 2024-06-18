@@ -3,7 +3,12 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Ganss.Xss;
+using ImageMagick;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc.DataAnnotations;
 using Microsoft.Extensions.Options;
 using mvc.Models.Enums;
@@ -23,6 +28,7 @@ namespace mvc.Models.Services.Application
         private readonly IDatabaseAccessor db;
         private IImagePersister imagePersister;
         private readonly IHttpContextAccessor httpContextAccessor;
+        private readonly IEmailClient emailClient;
         private readonly IOptionsMonitor<CoursesOptions> coursesOptions;
 
         public string Version => throw new NotImplementedException();
@@ -32,7 +38,8 @@ namespace mvc.Models.Services.Application
             IDatabaseAccessor db, // nostra interfaccia per implementare metodo QueryAsync
             IOptionsMonitor<CoursesOptions> coursesOptions, // sezione di configurazione nel appsetting
             IImagePersister imagePersister,      // nostra interfaccia per persistere immagine
-            IHttpContextAccessor httpContextAccessor    // per ottenere la classe User dalla Identity
+            IHttpContextAccessor httpContextAccessor,    // per ottenere la classe User dalla Identity
+            IEmailClient emailClient                    // per invio delle email
             )
         {
             this.coursesOptions = coursesOptions;
@@ -43,6 +50,7 @@ namespace mvc.Models.Services.Application
             this.db = db;
             this.imagePersister = imagePersister;
             this.httpContextAccessor = httpContextAccessor;
+            this.emailClient = emailClient;
         }
 
         public async Task<CourseDetailViewModel> GetCourseAsync(int id)
@@ -378,6 +386,77 @@ namespace mvc.Models.Services.Application
                 throw new CourseNotFoundException(i.Id);
             }
 
+
+
+        }
+
+        // per invio di una mail, riceve id del corso e domanda da inviare, dal Contact.cs
+        public async Task SendQuestionToCourseAuthorAsync(int id, string contactQuestion)
+        {
+            
+            // log strutturato
+            logger.LogInformation("Invio mail per corso: {id}", id);
+
+            // estrazione titolo
+            FormattableString query = $@"SELECT Title, Description, Email FROM Courses WHERE Id = {id}";
+            DataSet ds = await db.QueryAsync(query);
+
+            if (ds.Tables[0].Rows.Count == 0)
+            {
+                logger.LogWarning("Corso non trovato");
+                throw new CourseNotFoundException(id);
+            }
+
+            DataRow drCorso = ds.Tables[0].Rows[0];
+            string titolo = Convert.ToString(drCorso["Title"]);            
+            string authorEmail = Convert.ToString(drCorso["Email"]);
+
+            // recupero info dell'utente collegato (httpContextAccessor)
+            string userFullName = string.Empty;
+            string userEmail = string.Empty;
+
+            try
+            {
+                userFullName =  httpContextAccessor.HttpContext.User.FindFirst("NomeCompleto").Value; // Campo mappato su AspNetUsers.FullName
+                userEmail = httpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Email).Value;
+                
+                
+            }
+            catch (System.Exception)
+            {
+                
+                throw;
+            }
+
+            // sanitizzazione della domanda (potrebbe includere link)
+            //var opt = new HtmlSanitizer().AllowedTags;
+            //opt.Add("");
+
+            HtmlSanitizerOptions opp = new HtmlSanitizerOptions();
+            opp.AllowedTags.Clear();
+
+            contactQuestion = new HtmlSanitizer(opp).Sanitize(contactQuestion);
+            //contactQuestion = new HtmlSanitizer().Sanitize(contactQuestion);
+
+
+
+
+
+            // composizione email
+            string oggetto = $"Domanda per il tuo corso '{titolo}";
+            string testo = $@"<p>L'utente {userFullName} (<a href=""{userEmail}"">{userEmail}</a>)
+                              ha inviato questa domanda:</p>
+                              <p>{contactQuestion}</p>";
+
+            try
+            {
+                await emailClient.SendEmailAsync(authorEmail, userEmail, oggetto, testo);
+            }
+            catch (System.Exception)
+            {
+                
+                throw new SendMailException(authorEmail);
+            }
 
 
         }

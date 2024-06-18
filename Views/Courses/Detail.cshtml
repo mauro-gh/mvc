@@ -27,6 +27,7 @@
                 </div>
                  <span>LogoPath: @Model.LogoPath</span>
                 <img src="@Model.LogoPath" class="img-fluid course-image" alt="@Model.Title" asp-append-version="true">
+                <a asp-page="/Contact" asp-route-id="@Model.Id" class="btn btn-block btn-outline-info m-3">Fai una domanda</a>
             </aside>
         </div>
     </div>
