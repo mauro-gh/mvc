@@ -12,6 +12,7 @@
             <div asp-validation-summary="All"></div>
             <label asp-for="ContactQuestion"></label>
             <textarea asp-for="ContactQuestion" class="form-control" rows="5"></textarea>
+            <recaptcha />
             <button type="submit" class="btn btn-primary mt-3"><i class="far far fa-paper-plane"></i>  Invia domanda</button>
         </form>
     </div>

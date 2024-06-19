@@ -13,6 +13,7 @@ using mvc.Models.Entities;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using AspNetCore.ReCaptcha;
 internal class Program
 {
 
@@ -83,7 +84,8 @@ internal class Program
         builder.Services.AddSingleton<IEmailSender, MailKitEmailSender>();
         builder.Services.AddSingleton<IEmailClient, MailKitEmailSender>();
 
-        
+        // Recaptcha
+        builder.Services.AddReCaptcha(builder.Configuration.GetSection("ReCaptcha"));
 
         
 

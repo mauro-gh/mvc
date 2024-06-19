@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCore.ReCaptcha;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
@@ -10,9 +11,11 @@ using Microsoft.Extensions.Logging;
 using mvc.Models.Services.Application;
 using mvc.Models.ViewModels;
 
+
 namespace mvc.Pages
 {
     [Authorize]
+    [ValidateReCaptcha(ErrorMessage = "Clicca sul pulsante 'non sono un robot'")]
     public class Contact : PageModel
     {
 
@@ -46,6 +49,7 @@ namespace mvc.Pages
             
 
         }
+
 
         public async Task<IActionResult> OnPostAsync([FromQuery] int id,  [FromServices] ICourseService cs)
         {
