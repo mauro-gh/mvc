@@ -107,11 +107,12 @@ internal class Program
                   options.SignIn.RequireConfirmedAccount = true; // attiva invio email di registrazione
                   options.Lockout.MaxFailedAccessAttempts = 3;
                   options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
-                  })
-            .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
+                  })            
+            //.AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
             .AddPasswordValidator<CommonPasswordValidator<ApplicationUser>>()
             //.AddEntityFrameworkStores<MyCourseDbContext>()
-            .AddUserStore<AdoNetUserStore>();
+            .AddUserStore<AdoNetUserStore>()
+            ;
             
         // UserStore
 

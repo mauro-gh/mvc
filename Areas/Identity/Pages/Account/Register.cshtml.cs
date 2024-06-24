@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading;
@@ -31,19 +32,21 @@ namespace mvc.Areas.Identity.Pages.Account
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
 
+
         public RegisterModel(
             UserManager<ApplicationUser> userManager,
             IUserStore<ApplicationUser> userStore,
             SignInManager<ApplicationUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender
+            )
         {
             _userManager = userManager;
             _userStore = userStore;
             _emailStore = GetEmailStore();
             _signInManager = signInManager;
             _logger = logger;
-            _emailSender = emailSender;
+            _emailSender = emailSender;            
         }
 
         /// <summary>
@@ -132,6 +135,27 @@ namespace mvc.Areas.Identity.Pages.Account
                 if (result.Succeeded)
                 {
                     _logger.LogInformation("User created a new account with password.");
+
+                    // solo se l'email e' quella di admin, gli assegno il ruolo administrator
+                    if (user.Email.Equals("adminadmin@example.com", StringComparison.OrdinalIgnoreCase))
+                    {
+                        // Claim c = new (ClaimTypes.Role, "Aministrator");
+                        // IdentityResult assignResult = await _userManager.AddClaimAsync(user, c);
+
+                        // if (!assignResult.Succeeded)
+                        // {
+                        //     _logger.LogError("ruolo non assegnato");
+                        // }
+
+                        Claim claim = new (ClaimTypes.Role, "Administrator");
+                        IdentityResult roleAssignmentResult = await _userManager.AddClaimAsync(user, claim);
+                        if (!roleAssignmentResult.Succeeded)
+                        {
+                            _logger.LogWarning("Could not assign the administrator role to the user");
+                        }                        
+
+
+                    }
 
                     var userId = await _userManager.GetUserIdAsync(user);
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
