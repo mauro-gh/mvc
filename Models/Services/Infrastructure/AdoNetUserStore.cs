@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
 using mvc.Models.Entities;
@@ -10,7 +11,7 @@ namespace mvc.Models.Services.Infrastructure
 {
     public class AdoNetUserStore : 
             IUserStore<ApplicationUser>,
-            // IUserClaimStore<ApplicationUser>,
+            IUserClaimStore<ApplicationUser>,
             IUserEmailStore<ApplicationUser>,
             IUserPasswordStore<ApplicationUser>,
             IUserPhoneNumberStore<ApplicationUser>
@@ -246,7 +247,60 @@ namespace mvc.Models.Services.Infrastructure
             user.PhoneNumberConfirmed = confirmed;
             return Task.CompletedTask;
         }
-        #endregion    
+
+        #endregion
+
+        #region Implementation of IUserClaimStore<ApplicationUser>
+
+        public async Task<IList<Claim>> GetClaimsAsync(ApplicationUser user, CancellationToken token)
+        {
+            DataSet dataSet = await db.QueryAsync($"SELECT * FROM AspNetUserClaims WHERE UserId={user.Id}", token);
+            List<Claim> claims = dataSet.Tables[0].AsEnumerable().Select(row => new Claim(
+                type: Convert.ToString(row["ClaimType"]),
+                value: Convert.ToString(row["ClaimValue"])
+            )).ToList();
+            return claims;
+        }
+        
+        public async Task AddClaimsAsync(ApplicationUser user, IEnumerable<Claim> claims, CancellationToken token)
+        {
+            foreach (Claim claim in claims)
+            {
+                int affectedRows = await db.CommandAsync($"INSERT INTO AspNetUserClaims (UserId, ClaimType, ClaimValue) VALUES ({user.Id}, {claim.Type}, {claim.Value})", token);
+                if (affectedRows == 0)
+                {
+                    throw new InvalidOperationException("Couldn't add the claim");
+                }
+            }
+        }
+
+        public async Task ReplaceClaimAsync(ApplicationUser user, Claim claim, Claim newClaim, CancellationToken token)
+        {
+            await RemoveClaimsAsync(user, new[] { claim }, token);
+            await AddClaimsAsync(user, new[] { newClaim }, token);
+        }
+
+        public async Task RemoveClaimsAsync(ApplicationUser user, IEnumerable<Claim> claims, CancellationToken token)
+        {
+            foreach (Claim claim in claims)
+            {
+                int affectedRows = await db.CommandAsync($"DELETE FROM AspNetUserClaims WHERE UserId={user.Id} AND ClaimType={claim.Type} AND ClaimValue={claim.Value}", token);
+                if (affectedRows == 0)
+                {
+                    throw new InvalidOperationException("Couldn't remove the claim");
+                }
+            }
+        }
+
+        public async Task<IList<ApplicationUser>> GetUsersForClaimAsync(Claim claim, CancellationToken token)
+        {
+            DataSet dataSet = await db.QueryAsync($"SELECT AspNetUsers.* FROM AspNetUserClaims INNER JOIN AspNetUsers ON AspNetUserClaims.UserId = AspNetUsers.Id WHERE AspNetUserClaims.ClaimType={claim.Type} AND AspNetUserClaims.ClaimValue={claim.Value}", token);
+            List<ApplicationUser> users = dataSet.Tables[0].AsEnumerable().Select(row => ApplicationUser.FromDataRow(row)).ToList();
+            return users;
+        }
+        #endregion
+
+    
 
     }
 }

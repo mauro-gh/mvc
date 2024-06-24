@@ -137,19 +137,12 @@ namespace mvc.Areas.Identity.Pages.Account
                     _logger.LogInformation("User created a new account with password.");
 
                     // solo se l'email e' quella di admin, gli assegno il ruolo administrator
-                    if (user.Email.Equals("adminadmin@example.com", StringComparison.OrdinalIgnoreCase))
+                    if (user.Email.Equals("admin@example.com", StringComparison.OrdinalIgnoreCase))
                     {
-                        // Claim c = new (ClaimTypes.Role, "Aministrator");
-                        // IdentityResult assignResult = await _userManager.AddClaimAsync(user, c);
 
-                        // if (!assignResult.Succeeded)
-                        // {
-                        //     _logger.LogError("ruolo non assegnato");
-                        // }
-
-                        Claim claim = new (ClaimTypes.Role, "Administrator");
-                        IdentityResult roleAssignmentResult = await _userManager.AddClaimAsync(user, claim);
-                        if (!roleAssignmentResult.Succeeded)
+                        Claim c = new (ClaimTypes.Role, "Administrator");
+                        IdentityResult assignResult = await _userManager.AddClaimAsync(user, c);
+                        if (!assignResult.Succeeded)
                         {
                             _logger.LogWarning("Could not assign the administrator role to the user");
                         }                        

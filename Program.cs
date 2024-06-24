@@ -108,7 +108,7 @@ internal class Program
                   options.Lockout.MaxFailedAccessAttempts = 3;
                   options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(2);
                   })            
-            //.AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
+            .AddClaimsPrincipalFactory<CustomClaimsPrincipalFactory>()
             .AddPasswordValidator<CommonPasswordValidator<ApplicationUser>>()
             //.AddEntityFrameworkStores<MyCourseDbContext>()
             .AddUserStore<AdoNetUserStore>()
