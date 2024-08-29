@@ -48,9 +48,9 @@ internal class Program
             options.CacheProfiles.Add("Home", homeProfile);
 
             // per le autorizzazione degli utenti: non funziona
-            //AuthorizationPolicyBuilder policyBuilder = new();
-            //AuthorizationPolicy p = policyBuilder.RequireAuthenticatedUser().Build();
-            //AuthorizeFilter f = new(p);
+            AuthorizationPolicyBuilder policyBuilder = new();
+            AuthorizationPolicy p = policyBuilder.RequireAuthenticatedUser().Build();
+            AuthorizeFilter f = new(p);
             //options.Filters.Add(f);
         });
 

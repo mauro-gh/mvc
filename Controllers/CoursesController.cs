@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using mvc.Models.Enums;
 using mvc.Models.Exceptions;
 using mvc.Models.InputModels;
 using mvc.Models.Services.Application;
@@ -14,7 +15,7 @@ using mvc.Models.ViewModels;
 namespace mvc.Controllers
 {
 
-    [Authorize]
+    [Authorize(Roles = nameof(Role.Teacher) + "," + nameof(Role.Administrator))]
     public class CoursesController : Controller
     {
 
@@ -70,7 +71,7 @@ namespace mvc.Controllers
         //     // Passo elenco alla view
         //     return View(courses);
         // }
-
+        [AllowAnonymous]
         public async Task<IActionResult> Detail([FromRoute]int id)
         {
             //return Content($"Sono detail, ricevuto id {id}");
